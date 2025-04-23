@@ -41,6 +41,7 @@ public class OrdenPedidoController {
     @PostMapping
     public ResponseEntity<?> createOrden(@RequestBody OrdenPedidoDTO ordenPedidoDTO) {
         try {
+            System.out.println(ordenPedidoDTO);
             ordenPedidoService.save(ordenPedidoDTO);
             return ResponseEntity.ok("Orden creada exitosamente");
         } catch (Exception e) {

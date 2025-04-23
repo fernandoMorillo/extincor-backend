@@ -37,6 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authorizationHeader.substring(7); // Extrae el token sin "Bearer "
+        System.out.println("token llegado: " + token);
         String email = jwtUtil.extractEmail(token);
 
         System.out.println("email: " + email);
