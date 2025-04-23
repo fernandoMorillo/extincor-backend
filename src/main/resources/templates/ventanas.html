@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Información del Cliente</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Información del Cliente</h1>
+
+    <!-- Mostrar mensaje de error si no hay datos -->
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <!-- Información del Cliente -->
+    <div th:if="${cliente}">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Fecha de Creación</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td th:text="${cliente.id}"></td>
+                <td th:text="${cliente.nombre}"></td>
+                <td th:text="${cliente.correo}"></td>
+                <td th:text="${#dates.format(cliente.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                <td th:text="${cliente.direccion}"></td>
+                <td th:text="${cliente.telefono}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a th:href="@{/logout}" class="btn btn-danger mt-4">Cerrar sesión</a>
+</div>
+</body>
+</html>

@@ -1,28 +1,19 @@
-package com.example.demo.models.entity;
+    package com.example.demo.models.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
+    import com.example.demo.models.entity.Usuario;
+    import jakarta.persistence.DiscriminatorValue;
+    import jakarta.persistence.Entity;
+    import jakarta.persistence.Column;
+    import lombok.Data;
+    import lombok.EqualsAndHashCode;
 
-import java.util.List;
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    @Entity
+    @DiscriminatorValue("ADMINISTRADOR")
+    public class Administrador extends Usuario {
 
-@Data
-@Entity
-@Table(name = "administrador")
-public class Administrador {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String nombre;
-    private String usuario;
-    private String correo;
-    private String telefono;
-    private String role;
+        private String telefono;
 
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
-    private List<Ordenpedido> ordenpedidos;
-
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
-    private List<Compra> compras;
-}
+    }

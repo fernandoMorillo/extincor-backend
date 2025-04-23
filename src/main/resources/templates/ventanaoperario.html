@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ventana Operario</title>
+</head>
+<body>
+<h1>Información del Operario</h1>
+<p><strong>Nombre:</strong> <span th:text="${ventana.operario.nombre}"></span></p>
+<p><strong>Correo:</strong> <span th:text="${ventana.operario.correo}"></span></p>
+<p><strong>Dirección:</strong> <span th:text="${ventana.operario.direccion}"></span></p>
+<p><strong>Teléfono:</strong> <span th:text="${ventana.operario.telefono}"></span></p>
+<p><strong>Especialidad:</strong> <span th:text="${ventana.operario.especialidad}"></span></p>
+<p><strong>Estado:</strong> <span th:text="${ventana.operario.estado}"></span></p>
+
+
+<a href="/index">Volver</a>
+</body>
+</html>

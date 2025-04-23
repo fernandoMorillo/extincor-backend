@@ -2,27 +2,29 @@ package com.example.demo.models.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @Entity
-@Table(name = "compra")
+@Table(name = "compras")
 public class Compra {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date fecha_compra;
+
+    private String detalle;
     private String proveedor;
     private float monto;
     private String estado;
+    @Temporal(TemporalType.DATE)
+    private Date fechaCompra;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
-    private List<Detallecompras> detallecompras;
 
-    @ManyToOne
-    @JoinColumn(name = "administrador_id", insertable = false, updatable = false, nullable = false)
-    private Administrador administrador;
+    
+
+
 }

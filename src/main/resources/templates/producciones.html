@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Producciones</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Font Awesome CDN Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+            <div class="sidebar-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" th:href="@{/}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <!-- Dropdown Gestión de Usuarios -->
+                    <li class="nav-item">
+                        <a class="nav-link text-light" data-toggle="collapse" href="#gestionUsuarios" role="button" aria-expanded="false" aria-controls="gestionUsuarios">
+                            <i class="fas fa-users"></i> Gestión de Usuarios
+                        </a>
+                        <div class="collapse" id="gestionUsuarios">
+                            <ul class="nav flex-column ml-3">
+                               
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/administradores}">
+                                        <i class="fas fa-user-shield"></i> Administradores
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/operarios}">
+                                        <i class="fas fa-user-shield"></i> operario
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/clientes}">
+                                        <i class="fas fa-user-friends"></i> Clientes
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Dropdown Gestión de Productos y Compras -->
+                    <li class="nav-item">
+                        <a class="nav-link text-light" data-toggle="collapse" href="#gestionComprasProductos" role="button" aria-expanded="false" aria-controls="gestionComprasProductos">
+                            <i class="fas fa-boxes"></i> Compras y Productos
+                        </a>
+                        <div class="collapse" id="gestionComprasProductos">
+                            <ul class="nav flex-column ml-3">
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/compras}">
+                                        <i class="fas fa-shopping-cart"></i> Compras
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/productos}">
+                                        <i class="fas fa-box"></i> Productos
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/detalles-compra}">
+                                        <i class="fas fa-receipt"></i> Detalles de Compra
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Dropdown Gestión de Producción -->
+                    <li class="nav-item">
+                        <a class="nav-link text-light" data-toggle="collapse" href="#gestionProduccion" role="button" aria-expanded="false" aria-controls="gestionProduccion">
+                            <i class="fas fa-industry"></i> Gestión de Producción
+                        </a>
+                        <div class="collapse" id="gestionProduccion">
+                            <ul class="nav flex-column ml-3">
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/producciones}">
+                                        <i class="fas fa-industry"></i> Producciones
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/insumos}">
+                                        <i class="fas fa-cubes"></i> Insumos
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/insumos-produccion}">
+                                        <i class="fas fa-tools"></i> Insumos de Producción
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Dropdown Gestión de Órdenes y Envases -->
+                    <li class="nav-item">
+                        <a class="nav-link text-light" data-toggle="collapse" href="#gestionOrdenesEnvases" role="button" aria-expanded="false" aria-controls="gestionOrdenesEnvases">
+                            <i class="fas fa-clipboard-list"></i> Órdenes y Envases
+                        </a>
+                        <div class="collapse" id="gestionOrdenesEnvases">
+                            <ul class="nav flex-column ml-3">
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/ordenes}">
+                                        <i class="fas fa-clipboard-list"></i> Órdenes
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/envases}">
+                                        <i class="fas fa-wine-bottle"></i> Envases
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" th:href="@{/detalles-pedido}">
+                                        <i class="fas fa-list-alt"></i> Detalles de Pedido
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- Logout Button at the Bottom -->
+                <ul class="nav flex-column mt-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-light logout" th:href="@{/logout}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content Section -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Producciones</h1>
+            </div>
+
+            <!-- Formulario de Crear/Editar Producción -->
+            <div class="content-wrapper mb-4">
+                <form th:action="@{/producciones/guardar}" th:object="${produccion}" method="post">
+                    <input type="hidden" th:field="*{id}"/> <!-- Campo oculto para el ID -->
+                    <div class="form-group">
+                        <label for="codigoProduccion">Código de Producción:</label>
+                        <input type="text" id="codigoProduccion" th:field="*{codigoProduccion}" class="form-control" readonly/>
+                    </div>
+                    
+
+
+                    <div class="form-group">
+                        <label for="fechaInicio">Fecha de Inicio:</label>
+                        <input type="date" id="fechaInicio" th:field="*{fechaInicio}" class="form-control" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fechaFin">Fecha de Fin:</label>
+                        <input type="date" id="fechaFin" th:field="*{fechaFin}" class="form-control" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cantidadProducida">Cantidad Producida:</label>
+                        <input type="number" id="cantidadProducida" th:field="*{cantidad_producida}" class="form-control" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productoNombre">Nombre del Producto:</label>
+                        <input type="text" id="productoNombre" th:field="*{producto_nombre}" class="form-control" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">Estado:</label>
+                        <select id="estado" th:field="*{estado}" class="form-control" required>
+                            <option value="Activo" th:selected="${estado == 'Activo'}">Activo</option>
+                            <option value="Inactivo" th:selected="${estado == 'Inactivo'}">Inactivo</option>
+                            <option value="Pendiente" th:selected="${estado == 'Pendiente'}">Pendiente</option>
+                        </select>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label for="operario">Operario:</label>
+                        <select id="operario" th:field="*{operario.id}" class="form-control" required>
+                            <option th:each="operario : ${operarios}" th:value="${operario.id}" th:text="${operario.nombre}">Operario</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" th:text="${produccion.id == null ? 'Crear' : 'Actualizar'}"></button>
+                        <a th:href="@{/producciones}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabla de Producciones -->
+            <div class="table-responsive">
+                <table class="table table-striped table-hover" id="produccionesTable">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Código</th>
+
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Cantidad Producida</th>
+                        <th>Producto</th>
+                        <th>Estado</th>
+                        <th>Operario</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="produccion : ${producciones}">
+                        <td th:text="${produccion.codigoProduccion}">P001</td>
+
+                        <td th:text="${#dates.format(produccion.fechaInicio, 'yyyy-MM-dd')}">Fecha Inicio</td>
+                        <td th:text="${#dates.format(produccion.fechaFin, 'yyyy-MM-dd')}">Fecha Fin</td>
+                        <td th:text="${produccion.cantidad_producida}">Cantidad Producida</td>
+                        <td th:text="${produccion.producto_nombre}">Producto</td>
+                        <td th:text="${produccion.estado}">Estado</td>
+                        <td th:text="${produccion.operario.nombre}">Operario</td>
+                        <td>
+                            <a th:href="@{/producciones/editar/{id}(id=${produccion.id})}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a th:href="@{/producciones/eliminar/{id}(id=${produccion.id})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Está seguro de que desea eliminar esta producción?');">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#produccionesTable').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecords": "No se encontraron resultados",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "No hay registros disponibles",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                "search": "Buscar:",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,11 +1,10 @@
 package com.example.demo.models.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class AdministradorDTO {
-
-    private Long id;
-    private String nombre;
-    private String role;
+@EqualsAndHashCode(callSuper = true)
+public class AdministradorDTO extends UsuarioDTO {
+    private String telefono;
 }
