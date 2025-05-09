@@ -32,6 +32,6 @@ public class Produccion implements Serializable {
     private String estado;
 
     @ManyToOne
-    @JoinColumn(name = "operarios_id", referencedColumnName = "id")
+    @JoinColumn(name = "operario_id", referencedColumnName = "id")
     private OperarioIngreso operario;
 }

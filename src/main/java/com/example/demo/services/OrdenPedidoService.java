@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.models.dto.EstadoPedidoRequestDTO;
 import com.example.demo.models.dto.OrdenPedidoDTO;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,7 @@ public interface OrdenPedidoService {
      * @param ordenPedidoDTO Objeto OrdenPedidoDTO con la información de la orden.
      * @return OrdenPedidoDTO actualizado.
      */
-    OrdenPedidoDTO save(OrdenPedidoDTO ordenPedidoDTO);
+     List<OrdenPedidoDTO> save(OrdenPedidoDTO ordenPedidoDTO);
 
     /**
      * Elimina una orden de pedido por su ID.
@@ -45,7 +46,7 @@ public interface OrdenPedidoService {
      * @param nuevoEstado Nuevo estado de la orden (Activo, Inactivo, Pendiente).
      * @return OrdenPedidoDTO actualizado.
      */
-    OrdenPedidoDTO cambiarEstado(Long id, String nuevoEstado);
+    OrdenPedidoDTO cambiarEstado(Long id, EstadoPedidoRequestDTO request);
 
     /**
      * Actualiza la fecha de entrega de una orden.
@@ -54,4 +55,6 @@ public interface OrdenPedidoService {
      * @return OrdenPedidoDTO actualizado.
      */
     OrdenPedidoDTO actualizarFechaEntrega(Long id, Date nuevaFecha);
+
+    void asignarOperario(Long id, Long operarioId);
 }

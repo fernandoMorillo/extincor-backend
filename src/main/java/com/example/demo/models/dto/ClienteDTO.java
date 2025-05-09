@@ -8,5 +8,6 @@ import lombok.EqualsAndHashCode;
 public class ClienteDTO extends UsuarioDTO {
     private String direccion;
     private String telefono;
+    private String tipo_cliente;
 
 }

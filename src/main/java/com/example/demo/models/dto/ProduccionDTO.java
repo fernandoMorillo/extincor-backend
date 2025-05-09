@@ -1,8 +1,8 @@
         package com.example.demo.models.dto;
 
+        import com.example.demo.models.entity.OperarioIngreso;
         import lombok.Data;
         import java.util.Date;
-        import java.util.List;
 
         @Data
         public class ProduccionDTO {
@@ -13,6 +13,6 @@
             private int cantidad_producida;
             private String producto_nombre;
             private String estado;
-            private OperarioIngresoDto operario;
+            private OperarioIngreso operario;
         }
         

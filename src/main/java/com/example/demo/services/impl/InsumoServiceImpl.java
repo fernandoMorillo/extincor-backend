@@ -54,6 +54,9 @@
             dto.setStock(insumo.getStock());
             dto.setCantidad(insumo.getCantidad());
             dto.setUnidades(insumo.getUnidades());
+            dto.setPrecioUnitario(insumo.getPrecioUnitario());
+            dto.setStockMinimo(insumo.getStockMinimo());
+            dto.setFechaIngreso(insumo.getFechaIngreso());
             return dto;
         }
 
@@ -64,6 +67,9 @@
             insumo.setStock(insumoDTO.getStock());
             insumo.setCantidad(insumoDTO.getCantidad());
             insumo.setUnidades(insumoDTO.getUnidades());
+            insumo.setPrecioUnitario(insumoDTO.getPrecioUnitario());
+            insumo.setStockMinimo(insumoDTO.getStockMinimo());
+            insumo.setFechaIngreso(insumoDTO.getFechaIngreso());
             return insumo;
         }
     }

@@ -1,16 +1,19 @@
 package com.example.demo.services.impl;
 
-import com.example.demo.models.dto.ClienteDTO;
-import com.example.demo.models.dto.OrdenPedidoDTO;
+import com.example.demo.models.dto.*;
 import com.example.demo.models.entity.Cliente;
+import com.example.demo.models.entity.OperarioIngreso;
 import com.example.demo.models.entity.OrdenPedido;
 import com.example.demo.repository.ClienteRepository;
+import com.example.demo.repository.OperarioIngresoRepository;
 import com.example.demo.repository.OrdenPedidoRepository;
 import com.example.demo.services.OrdenPedidoService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +26,8 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
 
     @Autowired
     private ClienteRepository clienteRepository;
+    @Autowired
+    private OperarioIngresoRepository operarioIngresoRepository;
 
     @Override
     @Transactional
@@ -56,17 +61,26 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
 
     @Override
     @Transactional
-    public OrdenPedidoDTO save(OrdenPedidoDTO ordenPedidoDTO) {
-        OrdenPedido ordenPedido = convertToEntity(ordenPedidoDTO);
+    public List<OrdenPedidoDTO> save(OrdenPedidoDTO ordenPedidoDTO) {
+        List<OrdenPedidoDTO> resultList = new ArrayList<>();
 
-        // Asignar número único e incrementable si es un nuevo pedido
-        if (ordenPedido.getId() == null) {
-            Long lastNumeroPedido = ordenPedidoRepository.findMaxNumeroPedido();
-            ordenPedido.setNumeroPedido((lastNumeroPedido != null ? lastNumeroPedido : 0L) + 1);
+        int cantidad = 1;
+        if ("venta".equalsIgnoreCase(ordenPedidoDTO.getTipoServicio()) && ordenPedidoDTO.getCantidadExtintores() != null) {
+            cantidad = ordenPedidoDTO.getCantidadExtintores();
         }
 
-        OrdenPedido savedOrdenPedido = ordenPedidoRepository.save(ordenPedido);
-        return convertToDTO(savedOrdenPedido);
+        for (int i = 0; i < cantidad; i++) {
+            OrdenPedido ordenPedido = convertToEntity(ordenPedidoDTO);
+
+            // Asignar número único e incrementable si es un nuevo pedido
+            Long lastNumeroPedido = ordenPedidoRepository.findMaxNumeroPedido();
+            ordenPedido.setNumeroPedido((lastNumeroPedido != null ? lastNumeroPedido : 0L) + 1);
+
+            OrdenPedido saved = ordenPedidoRepository.save(ordenPedido);
+            resultList.add(convertToDTO(saved));
+        }
+
+        return resultList;
     }
 
     @Override
@@ -83,16 +97,34 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         return String.format("H%04d", nextNumero);
     }
 
-    @Override
+
     @Transactional
-    public OrdenPedidoDTO cambiarEstado(Long id, String nuevoEstado) {
+    public OrdenPedidoDTO cambiarEstado(Long id, EstadoPedidoRequestDTO request) {
+
         OrdenPedido orden = ordenPedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
-        orden.setEstadoPedido(nuevoEstado);
+        orden.setEstadoPedido(request.getEstadoPedido());
         OrdenPedido ordenActualizada = ordenPedidoRepository.save(orden);
         return convertToDTO(ordenActualizada);
     }
-    
+
+    @Override
+    @Transactional
+    public void asignarOperario(Long ordenId, Long operarioId) {
+        OrdenPedido orden = ordenPedidoRepository.findById(ordenId)
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
+        OperarioIngreso operario = operarioIngresoRepository.findById(operarioId)
+                .orElseThrow(() -> new RuntimeException("Operario no encontrado"));
+        orden.setOperario(operario);
+        ordenPedidoRepository.save(orden);
+    }
+
+    public List<OrdenPedido> obtenerOrdenesPorOperario(Long operarioId) {
+        return ordenPedidoRepository.findByOperarioId(operarioId);
+    }
+
+
+
 
     private OrdenPedidoDTO convertToDTO(OrdenPedido ordenPedido) {
         OrdenPedidoDTO dto = new OrdenPedidoDTO();
@@ -105,14 +137,54 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         dto.setEstadoPedido(ordenPedido.getEstadoPedido());
         dto.setMontoTotal(ordenPedido.getMontoTotal());
         dto.setFechaEntrega(ordenPedido.getFechaEntrega());
+        dto.setObservacion(ordenPedido.getObservacion());
+        dto.setTipoServicio(ordenPedido.getTipoServicio());
+
 
         // Mapear cliente si existe
         if (ordenPedido.getCliente() != null) {
             ClienteDTO clienteDTO = new ClienteDTO();
             clienteDTO.setId(ordenPedido.getCliente().getId());
             clienteDTO.setNombre(ordenPedido.getCliente().getNombre());
+            clienteDTO.setCorreo(ordenPedido.getCliente().getCorreo());
             dto.setCliente(clienteDTO);
         }
+
+        if (ordenPedido.getOperario() != null)  {
+            OperarioIngreso operario = ordenPedido.getOperario();
+            OperarioIngresoDto operarioIngresoDto = new OperarioIngresoDto();
+            operarioIngresoDto.setId(operario.getId());
+            operarioIngresoDto.setNombre(operario.getNombre());
+            operarioIngresoDto.setCorreo(operario.getCorreo());
+            operarioIngresoDto.setDireccion(operario.getDireccion());
+            operarioIngresoDto.setTelefono(operario.getTelefono());
+            operarioIngresoDto.setEspecialidad(operario.getEspecialidad());
+            operarioIngresoDto.setEstado(operario.getEstado());
+
+            // Convertir producciones a DTO
+            if (operario.getProducciones() != null) {
+                List<ProduccionDTO> produccionesDTO = operario.getProducciones()
+                        .stream()
+                        .map(prod -> {
+                            ProduccionDTO dtoProd = new ProduccionDTO();
+                            dtoProd.setId(prod.getId());
+                            dtoProd.setCodigoProduccion(prod.getCodigoProduccion());
+                            dtoProd.setFechaInicio(prod.getFechaInicio());
+                            dtoProd.setFechaFin(prod.getFechaFin());
+                            dtoProd.setCantidad_producida(prod.getCantidad_producida());
+                            dtoProd.setProducto_nombre(prod.getProducto_nombre());
+                            dtoProd.setEstado(prod.getEstado());
+                            return dtoProd;
+                        })
+                        .collect(Collectors.toList());
+                operarioIngresoDto.setProducciones(produccionesDTO);
+            }
+
+            dto.setOperario(operarioIngresoDto);
+
+        }
+
+
         return dto;
     }
 
@@ -125,10 +197,13 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
             ordenPedido.setNumeroPedido(Long.parseLong(dto.getNumeroPedido().substring(1)));
         }
 
-        ordenPedido.setFechaPedido(dto.getFechaPedido());
+        ordenPedido.setFechaEntrega(ajustarHoraFinDelDia(dto.getFechaEntrega()));
         ordenPedido.setEstadoPedido(dto.getEstadoPedido());
         ordenPedido.setMontoTotal(dto.getMontoTotal());
-        ordenPedido.setFechaEntrega(dto.getFechaEntrega());
+        ordenPedido.setFechaEntrega(ajustarHoraFinDelDia(dto.getFechaEntrega()));
+        ordenPedido.setObservacion(dto.getObservacion());
+        ordenPedido.setTipoServicio(dto.getTipoServicio());
+
 
         // Mapear cliente si existe
         if (dto.getCliente() != null) {
@@ -137,4 +212,15 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         }
         return ordenPedido;
     }
+
+    private Date ajustarHoraFinDelDia(Date fecha) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fecha);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
 }

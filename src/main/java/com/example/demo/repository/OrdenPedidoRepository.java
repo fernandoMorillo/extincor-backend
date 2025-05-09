@@ -24,4 +24,7 @@
         @Transactional
         @Query("DELETE FROM OrdenPedido o WHERE o.cliente.id = :clienteId")
         void deleteByClienteId(@Param("clienteId") Long clienteId);
+
+        List<OrdenPedido> findByOperarioId(Long operarioId);
     }
+

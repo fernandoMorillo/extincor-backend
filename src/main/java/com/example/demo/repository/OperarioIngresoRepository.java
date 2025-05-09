@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface  OperarioIngresoRepository extends JpaRepository<OperarioIngreso, Long> {
     Optional<OperarioIngreso> findByCorreo(String correo);
+
 }

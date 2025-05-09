@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,7 +83,30 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
             OrdenPedidoDTO ordenPedidoDTO = new OrdenPedidoDTO();
             ordenPedidoDTO.setId(detallePedido.getOrdenpedido().getId());
             ordenPedidoDTO.setNumeroPedido(String.valueOf(detallePedido.getOrdenpedido().getNumeroPedido()));
-            ordenPedidoDTO.setFechaPedido(detallePedido.getOrdenpedido().getFechaPedido());
+
+            // Ajuste de hora en fechaPedido (00:00:00)
+            Date fechaPedidoOriginal = detallePedido.getOrdenpedido().getFechaPedido();
+            if (fechaPedidoOriginal != null) {
+                Calendar calPedido = Calendar.getInstance();
+                calPedido.setTime(fechaPedidoOriginal);
+                calPedido.set(Calendar.HOUR_OF_DAY, 0);
+                calPedido.set(Calendar.MINUTE, 0);
+                calPedido.set(Calendar.SECOND, 0);
+                calPedido.set(Calendar.MILLISECOND, 0);
+                ordenPedidoDTO.setFechaPedido(calPedido.getTime());
+            }
+
+            // Ajuste de hora en fechaEntrega (23:59:59)
+            Date fechaEntregaOriginal = detallePedido.getOrdenpedido().getFechaEntrega();
+            if (fechaEntregaOriginal != null) {
+                Calendar calEntrega = Calendar.getInstance();
+                calEntrega.setTime(fechaEntregaOriginal);
+                calEntrega.set(Calendar.HOUR_OF_DAY, 23);
+                calEntrega.set(Calendar.MINUTE, 59);
+                calEntrega.set(Calendar.SECOND, 59);
+                calEntrega.set(Calendar.MILLISECOND, 0);
+                ordenPedidoDTO.setFechaEntrega(calEntrega.getTime());
+            }
 
             // Cliente dentro de la orden
             if (detallePedido.getOrdenpedido().getCliente() != null) {
@@ -106,6 +131,7 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
 
         return dto;
     }
+
 
     private DetallePedido convertToEntity(DetallePedidoDTO detallePedidoDTO) {
         DetallePedido detallePedido = new DetallePedido();

@@ -12,5 +12,6 @@ public class OperarioIngresoDto extends UsuarioDTO {
     private String especialidad; // Agregar esta propiedad
     private String estado; // Agregar estado si se usa en la vista
 
+    private List<OrdenPedidoDTO> ordenes;
     private List<ProduccionDTO> producciones;
 }

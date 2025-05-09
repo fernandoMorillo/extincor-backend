@@ -80,7 +80,7 @@ public class ProduccionServiceImpl implements ProduccionService {
 
         // Convertir OperarioIngreso a OperarioIngresoDto
         if (produccion.getOperario() != null) {
-            OperarioIngresoDto operarioDTO = new OperarioIngresoDto();
+            OperarioIngreso operarioDTO = new OperarioIngreso();
             operarioDTO.setId(produccion.getOperario().getId());
             operarioDTO.setNombre(produccion.getOperario().getNombre());
             operarioDTO.setDireccion(produccion.getOperario().getDireccion());
@@ -103,7 +103,7 @@ public class ProduccionServiceImpl implements ProduccionService {
 
         // Asociar OperarioIngreso si existe
         if (produccionDTO.getOperario() != null && produccionDTO.getOperario().getId() != null) {
-            OperarioIngreso operario = operarioIngresoRepository.findById(produccionDTO.getOperario().getId()).orElse(null);
+            OperarioIngreso operario = operarioIngresoRepository.findById(produccionDTO.getOperario().getId()).orElseThrow(() -> new RuntimeException("Operario no encontrado"));
             produccion.setOperario(operario);
         }
 

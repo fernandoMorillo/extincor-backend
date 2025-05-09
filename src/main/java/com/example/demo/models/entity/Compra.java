@@ -21,10 +21,13 @@ public class Compra {
     private float monto;
     private String estado;
     @Temporal(TemporalType.DATE)
-    private Date fechaCompra;
+    private Date fecha_compra;
 
+    @Column(nullable = false)
+    private int cantidadComprada;
 
-    
+    @ManyToOne
+    private Insumo insumo;
 
 
 }

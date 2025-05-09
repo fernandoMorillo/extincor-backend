@@ -2,7 +2,9 @@ package com.example.demo.services.impl;
 
 import com.example.demo.models.dto.CompraDTO;
 import com.example.demo.models.entity.Compra;
+import com.example.demo.models.entity.Insumo;
 import com.example.demo.repository.CompraRepository;
+import com.example.demo.repository.InsumoRepository;
 import com.example.demo.services.CompraService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class CompraServiceImpl implements CompraService {
 
     @Autowired
     private CompraRepository compraRepository;
+
+    @Autowired
+    private InsumoRepository insumoRepository;
 
     @Override
     @Transactional
@@ -42,10 +47,19 @@ public class CompraServiceImpl implements CompraService {
 
         compra.setDetalle(compraDTO.getDetalle());
         compra.setProveedor(compraDTO.getProveedor());
-        compra.setFechaCompra(compraDTO.getFechaCompra());
+        compra.setFecha_compra(compraDTO.getFecha_compra());
         compra.setEstado(compraDTO.getEstado());
         compra.setMonto(compraDTO.getMonto());
+
+        Insumo insumo = insumoRepository.findById(compraDTO.getInsumo_id())
+                .orElseThrow(() -> new RuntimeException("Insumo no encontrado"));
+        insumo.setStock(insumo.getStock() + compraDTO.getCantidadComprada());
+        insumoRepository.save(insumo);
+
+
         Compra savedCompra = compraRepository.save(compra);
+
+
         return convertToDTO(savedCompra);
     }
 
@@ -61,9 +75,11 @@ public class CompraServiceImpl implements CompraService {
         dto.setId(compra.getId());
         dto.setDetalle(compra.getDetalle());
         dto.setProveedor(compra.getProveedor());
-        dto.setFechaCompra(compra.getFechaCompra());
+        dto.setFecha_compra(compra.getFecha_compra());
         dto.setEstado(compra.getEstado());
         dto.setMonto(compra.getMonto());
+        dto.setCantidadComprada(compra.getCantidadComprada());
+
         return dto;
     }
 }

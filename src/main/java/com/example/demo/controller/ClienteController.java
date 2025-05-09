@@ -44,6 +44,7 @@ public class ClienteController {
      */
     @PostMapping
     public ResponseEntity<?> createCliente(@Valid @RequestBody ClienteDTO clienteDTO) {
+        System.out.println("cliente llegando: " + clienteDTO);
         try {
             clienteService.save(clienteDTO);
             return ResponseEntity.ok("Cliente creado exitosamente");
@@ -55,7 +56,7 @@ public class ClienteController {
     /**
      * Actualizar cliente existente
      */
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<?> updateCliente(@PathVariable Long id, @Valid @RequestBody ClienteDTO clienteDTO) {
         try {
             clienteDTO.setId(id);

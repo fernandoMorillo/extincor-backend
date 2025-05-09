@@ -78,6 +78,7 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setCorreo(clienteDTO.getCorreo());
         cliente.setDireccion(clienteDTO.getDireccion());
         cliente.setTelefono(clienteDTO.getTelefono());
+        cliente.setTipo_cliente(clienteDTO.getTipo_cliente());
     
         // Solo actualiza la contraseña si se proporciona una nueva
         if (clienteDTO.getPassword() != null && !clienteDTO.getPassword().isEmpty()) {
@@ -107,6 +108,7 @@ public class ClienteServiceImpl implements ClienteService {
         dto.setCorreo(cliente.getCorreo());
         dto.setDireccion(cliente.getDireccion());
         dto.setTelefono(cliente.getTelefono());
+        dto.setTipo_cliente(cliente.getTipo_cliente());
         return dto;
     }
 

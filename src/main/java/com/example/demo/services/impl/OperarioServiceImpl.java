@@ -2,8 +2,11 @@ package com.example.demo.services.impl;
 
 import com.example.demo.exceptions.CorreoYaExisteException;
 import com.example.demo.models.dto.OperarioIngresoDto;
+import com.example.demo.models.dto.OrdenPedidoDTO;
 import com.example.demo.models.entity.OperarioIngreso;
+import com.example.demo.models.entity.OrdenPedido;
 import com.example.demo.repository.OperarioIngresoRepository;
+import com.example.demo.repository.OrdenPedidoRepository;
 import com.example.demo.services.OperarioService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ public class OperarioServiceImpl implements OperarioService {
     private OperarioIngresoRepository operarioRepository;
 
     @Autowired
+    private OrdenPedidoRepository ordenPedidoRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder; // Inyectamos el encoder para las contraseñas
 
     @Override
@@ -30,7 +36,27 @@ public class OperarioServiceImpl implements OperarioService {
     public List<OperarioIngresoDto> findAll() {
         return operarioRepository.findAll()
                 .stream()
-                .map(this::convertToDTO)
+                .map(operario -> {
+                    OperarioIngresoDto dto = new OperarioIngresoDto();
+                    dto.setId(operario.getId());
+                    dto.setNombre(operario.getNombre());
+                    dto.setDireccion(operario.getDireccion());
+                    dto.setTelefono(operario.getTelefono());
+                    dto.setCorreo(operario.getCorreo());
+                    dto.setEspecialidad(operario.getEspecialidad());
+
+                    // ✅ Obtener las órdenes asignadas
+                    List<OrdenPedido> ordenes = ordenPedidoRepository.findByOperarioId(operario.getId());
+
+                    // Convertir a DTO
+                    List<OrdenPedidoDTO> ordenesDTO = ordenes.stream()
+                            .map(this::convertToOrdenDTO) // asegúrate de tener este método
+                            .collect(Collectors.toList());
+
+                    dto.setOrdenes(ordenesDTO);
+
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
     @Override
@@ -114,4 +140,18 @@ public class OperarioServiceImpl implements OperarioService {
         operario.setEstado(operarioDTO.getEstado());
         return operario;
     }
+
+    private OrdenPedidoDTO convertToOrdenDTO(OrdenPedido orden) {
+        OrdenPedidoDTO dto = new OrdenPedidoDTO();
+        dto.setId(orden.getId());
+        dto.setNumeroPedido(String.format("H%04d", orden.getNumeroPedido()));
+        dto.setEstadoPedido(orden.getEstadoPedido());
+        dto.setMontoTotal(orden.getMontoTotal());
+        dto.setFechaPedido(orden.getFechaPedido());
+        dto.setFechaEntrega(orden.getFechaEntrega());
+        dto.setObservacion(orden.getObservacion());
+
+        return dto;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.models.dto.EstadoPedidoRequestDTO;
 import com.example.demo.models.dto.OrdenPedidoDTO;
 import com.example.demo.services.OrdenPedidoService;
 import com.example.demo.services.ClienteService;
@@ -41,9 +42,8 @@ public class OrdenPedidoController {
     @PostMapping
     public ResponseEntity<?> createOrden(@RequestBody OrdenPedidoDTO ordenPedidoDTO) {
         try {
-            System.out.println(ordenPedidoDTO);
-            ordenPedidoService.save(ordenPedidoDTO);
-            return ResponseEntity.ok("Orden creada exitosamente");
+            List<OrdenPedidoDTO> creadas = ordenPedidoService.save(ordenPedidoDTO);
+            return ResponseEntity.ok(creadas);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al crear la orden.");
         }
@@ -53,7 +53,7 @@ public class OrdenPedidoController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrden(@PathVariable Long id, @RequestBody OrdenPedidoDTO ordenPedidoDTO) {
         try {
-            ordenPedidoDTO.setId(id); // Asegurarse que el DTO tiene el ID
+            ordenPedidoDTO.setId(id);
             ordenPedidoService.save(ordenPedidoDTO);
             return ResponseEntity.ok("Orden actualizada exitosamente");
         } catch (Exception e) {
@@ -69,10 +69,11 @@ public class OrdenPedidoController {
     }
 
     // Cambiar el estado de la orden
-    @PatchMapping("/{id}/estado")
-    public ResponseEntity<?> cambiarEstado(@PathVariable Long id, @RequestParam String nuevoEstado) {
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<?> cambiarEstado(@PathVariable Long id, @RequestBody EstadoPedidoRequestDTO request) {
+
         try {
-            OrdenPedidoDTO ordenActualizada = ordenPedidoService.cambiarEstado(id, nuevoEstado);
+            OrdenPedidoDTO ordenActualizada = ordenPedidoService.cambiarEstado(id, request);
             return ResponseEntity.ok(ordenActualizada);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al cambiar el estado de la orden.");
@@ -90,6 +91,16 @@ public class OrdenPedidoController {
             return ResponseEntity.badRequest().body("Error al actualizar la fecha de entrega.");
         }
     }
+
+    @PutMapping("/{ordenId}/asignar-operario/{operarioId}")
+    public ResponseEntity<?> asignarOperario(
+            @PathVariable Long ordenId,
+            @PathVariable Long operarioId
+    ) {
+        ordenPedidoService.asignarOperario(ordenId, operarioId);
+        return ResponseEntity.ok().build();
+    }
+
 
     // Listar todos los clientes (opcional, si necesitas en el frontend)
     @GetMapping("/clientes")
