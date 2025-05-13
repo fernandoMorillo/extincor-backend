@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.models.dto.EstadoPedidoRequestDTO;
+import com.example.demo.models.dto.InsumoDTO;
 import com.example.demo.models.dto.OrdenPedidoDTO;
 import com.example.demo.services.OrdenPedidoService;
 import com.example.demo.services.ClienteService;
 
+import com.example.demo.services.ProduccionService;
+import com.example.demo.services.impl.OrdenPedidoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,10 @@ public class OrdenPedidoController {
 
     @Autowired
     private ClienteService clienteService;
+    @Autowired
+    private ProduccionService produccionService;
+    @Autowired
+    private OrdenPedidoServiceImpl ordenPedidoServiceImpl;
 
     // Listar todas las órdenes
     @GetMapping
@@ -48,6 +55,18 @@ public class OrdenPedidoController {
             return ResponseEntity.badRequest().body("Error al crear la orden.");
         }
     }
+
+    @PostMapping("/{ordenId}/producciones/{produccionId}/insumos")
+    public ResponseEntity<?> registrarInsumos(
+            @PathVariable Long ordenId,
+            @PathVariable Long produccionId,
+            @RequestBody List<InsumoDTO> insumos
+    ) {
+        System.out.println("informacion llegando del id: " +  ordenId + produccionId + insumos);
+        ordenPedidoServiceImpl.registrarInsumosAProduccion(ordenId, produccionId, insumos);
+        return ResponseEntity.ok("Insumos registrados correctamente");
+    }
+
 
     // Actualizar una orden existente
     @PutMapping("/{id}")

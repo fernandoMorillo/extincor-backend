@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Date;
 
@@ -21,11 +22,11 @@ public class Produccion implements Serializable {
     @Column(name = "codigo_produccion", unique = true, nullable = false)
     private String codigoProduccion;
 
-    @Temporal(TemporalType.DATE)
-    private Date fechaInicio;
 
-    @Temporal(TemporalType.DATE)
-    private Date fechaFin;
+    private LocalDateTime fechaInicio;
+
+
+    private LocalDateTime fechaFin;
 
     private int cantidad_producida;
     private String producto_nombre;
@@ -34,4 +35,12 @@ public class Produccion implements Serializable {
     @ManyToOne
     @JoinColumn(name = "operario_id", referencedColumnName = "id")
     private OperarioIngreso operario;
+
+    @OneToMany(mappedBy = "produccion",  cascade = CascadeType.ALL)
+    private List<InsumoProduccion> insumosProduccion;
+
+    @OneToOne
+    @JoinColumn(name = "orden_pedido_id")
+    private OrdenPedido ordenPedido;
+
 }

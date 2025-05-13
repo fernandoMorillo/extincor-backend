@@ -2,15 +2,15 @@ package com.example.demo.services.impl;
 
 import com.example.demo.models.dto.OperarioIngresoDto;
 import com.example.demo.models.dto.ProduccionDTO;
-import com.example.demo.models.entity.OperarioIngreso;
-import com.example.demo.models.entity.Produccion;
-import com.example.demo.repository.ProduccionRepository;
-import com.example.demo.repository.OperarioIngresoRepository;
+import com.example.demo.models.entity.*;
+import com.example.demo.repository.*;
 import com.example.demo.services.ProduccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +22,14 @@ public class ProduccionServiceImpl implements ProduccionService {
 
     @Autowired
     private OperarioIngresoRepository operarioIngresoRepository;
+
+    @Autowired
+    private InsumoProduccionRepository insumoProduccionRepository;
+
+    @Autowired
+    private InsumoRepository insumoRepository;
+    @Autowired
+    private OrdenPedidoRepository ordenPedidoRepository;
 
     @Override
     @Transactional
@@ -44,14 +52,61 @@ public class ProduccionServiceImpl implements ProduccionService {
     public ProduccionDTO save(ProduccionDTO produccionDTO) {
         Produccion produccion = convertToEntity(produccionDTO);
 
-        // Generar el código único si es una nueva producción
         if (produccion.getId() == null) {
             produccion.setCodigoProduccion(generateNextCodigoProduccion());
+            produccion.setFechaInicio(LocalDateTime.now());
+            produccion.setEstado("EN_PROCESO");
         }
 
         Produccion savedProduccion = produccionRepository.save(produccion);
+
+        // Asociar insumos a la producción
+        if (produccionDTO.getInsumosProduccion() != null) {
+            for (Long insumoId : produccionDTO.getInsumosProduccion()) {
+                Insumo insumo = insumoRepository.findById(insumoId)
+                        .orElseThrow(() -> new RuntimeException("Insumo no encontrado: ID " + insumoId));
+
+               InsumoProduccion ip = new InsumoProduccion();
+                ip.setInsumo(insumo);
+                ip.setProduccion(savedProduccion);
+                ip.setEstado("EN_PROCESO");
+
+                insumoProduccionRepository.save(ip);
+            }
+        }
+
         return convertToDTO(savedProduccion);
     }
+
+    @Override
+    @Transactional
+    public ProduccionDTO iniciarProduccion(Long ordenId) {
+        OrdenPedido orden = ordenPedidoRepository.findById(ordenId)
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
+
+        if (orden.getProduccion() != null) {
+            throw new RuntimeException("La producción ya fue iniciada para esta orden.");
+        }
+
+        Produccion produccion = new Produccion();
+        produccion.setOrdenPedido(orden);
+        produccion.setFechaInicio(LocalDateTime.now());
+        produccion.setEstado("EN_PROCESO");
+        produccion.setCodigoProduccion("PROD" + orden.getNumeroPedido()); // Puedes ajustar el formato
+
+        Produccion guardada = produccionRepository.save(produccion);
+        orden.setProduccion(guardada); // Para mantener la relación bidireccional
+
+        ProduccionDTO dto = new ProduccionDTO();
+        dto.setId(guardada.getId());
+        dto.setEstado(guardada.getEstado());
+        dto.setFechaInicio(guardada.getFechaInicio());
+        dto.setCodigoProduccion(guardada.getCodigoProduccion());
+
+        return dto;
+    }
+
+
 
     @Override
     @Transactional
@@ -60,6 +115,25 @@ public class ProduccionServiceImpl implements ProduccionService {
         Long nextId = (lastId != null ? lastId : 0L) + 1; // Calcula el siguiente
         return String.format("P%03d", nextId); // Devuelve el código formateado
     }
+
+    @Override
+    @Transactional
+    public void marcarProduccionComoFinalizada(Long produccionId) {
+        Produccion produccion = produccionRepository.findById(produccionId)
+                .orElseThrow(() -> new RuntimeException("Producción no encontrada"));
+
+        produccion.setEstado("FINALIZADO");
+        produccion.setFechaFin(LocalDateTime.now());
+        produccionRepository.save(produccion);
+
+        // Actualizar estado de los insumos asociados
+        List<InsumoProduccion> insumos = insumoProduccionRepository.findByProduccionId(produccionId);
+        for (InsumoProduccion insumo : insumos) {
+            insumo.setEstado("FINALIZADO");
+        }
+        insumoProduccionRepository.saveAll(insumos);
+    }
+
 
     @Override
     @Transactional

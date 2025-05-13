@@ -1,6 +1,7 @@
     package com.example.demo.repository;
 
 
+    import com.example.demo.models.dto.InsumoDTO;
     import com.example.demo.models.entity.OrdenPedido;
     import jakarta.transaction.Transactional;
     import org.springframework.data.jpa.repository.JpaRepository;

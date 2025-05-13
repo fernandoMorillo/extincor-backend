@@ -2,8 +2,10 @@ package com.example.demo.services.impl;
 
 import com.example.demo.models.dto.CompraDTO;
 import com.example.demo.models.entity.Compra;
+import com.example.demo.models.entity.DetalleCompra;
 import com.example.demo.models.entity.Insumo;
 import com.example.demo.repository.CompraRepository;
+import com.example.demo.repository.DetalleCompraRepository;
 import com.example.demo.repository.InsumoRepository;
 import com.example.demo.services.CompraService;
 import jakarta.transaction.Transactional;
@@ -21,6 +23,9 @@ public class CompraServiceImpl implements CompraService {
 
     @Autowired
     private InsumoRepository insumoRepository;
+
+    @Autowired
+    private DetalleCompraRepository detalleCompraRepository;
 
     @Override
     @Transactional
@@ -59,6 +64,12 @@ public class CompraServiceImpl implements CompraService {
 
         Compra savedCompra = compraRepository.save(compra);
 
+        DetalleCompra detalleCompra = new DetalleCompra();
+        detalleCompra.setCantidad(compraDTO.getCantidadComprada());
+        detalleCompra.setInsumo(insumo);
+        detalleCompra.setCompra(savedCompra);
+
+        detalleCompraRepository.save(detalleCompra);
 
         return convertToDTO(savedCompra);
     }

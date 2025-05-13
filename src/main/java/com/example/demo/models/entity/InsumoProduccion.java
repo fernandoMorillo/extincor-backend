@@ -18,7 +18,15 @@ public class InsumoProduccion {
     @JoinColumn(name = "insumo_id")
     private Insumo insumo;
 
+    @Column(name = "estado")
+    private String estado;
+
     @ManyToOne
     @JoinColumn(name = "produccion_id")
     private Produccion produccion;
+
+
+    @ManyToOne
+    @JoinColumn(name = "orden_pedido_id")
+    private OrdenPedido ordenPedido;
 }

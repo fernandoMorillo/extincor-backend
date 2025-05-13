@@ -71,7 +71,15 @@ public class InsumoProduccionServiceImpl implements InsumoProduccionService {
     
         return convertToDTO(savedInsumoProduccion);
     }
-    
+
+    @Override
+    @Transactional
+    public List<InsumoProduccionDTO> findByProduccionId(Long produccionId) {
+        List<InsumoProduccion> entidades = insumoProduccionRepository.findByProduccionId(produccionId);
+        return entidades.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
     @Override
     @Transactional

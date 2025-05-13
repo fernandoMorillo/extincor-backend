@@ -31,7 +31,7 @@ public class InsumoProduccionController {
     }
 
     // Guardar o actualizar un insumo de producción
-    @PostMapping
+    @PostMapping("/{id}/guardarinsumos")
     public ResponseEntity<InsumoProduccionDTO> saveOrUpdateInsumoProduccion(@RequestBody InsumoProduccionDTO insumoProduccionDTO) {
         InsumoProduccionDTO savedDTO = insumoProduccionService.save(insumoProduccionDTO);
         return ResponseEntity.ok(savedDTO);

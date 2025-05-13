@@ -2,47 +2,69 @@ package com.example.demo.controller;
 
 import com.example.demo.models.dto.ProduccionDTO;
 import com.example.demo.services.ProduccionService;
-import com.example.demo.services.OperarioService;
+import com.example.demo.services.impl.ProduccionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/producciones")
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/producciones/")
 public class ProduccionController {
 
     @Autowired
     private ProduccionService produccionService;
-
     @Autowired
-    private OperarioService operarioService; // Inyectar servicio de operarios
+    private ProduccionServiceImpl produccionServiceImpl;
 
+    // Obtener todas las producciones
     @GetMapping
-    public String listProducciones(Model model) {
-        model.addAttribute("producciones", produccionService.findAll());
-        model.addAttribute("produccion", new ProduccionDTO()); // Objeto para el formulario de creación
-        model.addAttribute("operarios", operarioService.findAll()); // Cargar lista de operarios para el formulario
-        return "producciones"; // Vista combinada
+    public ResponseEntity<List<ProduccionDTO>> getAllProducciones() {
+        List<ProduccionDTO> producciones = produccionService.findAll();
+        return ResponseEntity.ok(producciones);
     }
 
-    @PostMapping("/guardar")
-    public String saveOrUpdateProduccion(@ModelAttribute ProduccionDTO produccionDTO) {
-        produccionService.save(produccionDTO);
-        return "redirect:/producciones";
+    // Obtener una producción por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<ProduccionDTO> getProduccionById(@PathVariable Long id) {
+        ProduccionDTO produccion = produccionService.findById(id);
+        if (produccion != null) {
+            return ResponseEntity.ok(produccion);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/editar/{id}")
-    public String editProduccion(@PathVariable Long id, Model model) {
-        model.addAttribute("producciones", produccionService.findAll());
-        model.addAttribute("produccion", produccionService.findById(id)); // Objeto específico para edición
-        model.addAttribute("operarios", operarioService.findAll()); // Asegura que operarios esté disponible al editar
-        return "producciones";
+    // Crear o actualizar producción
+    @PostMapping("/iniciar")
+    public ResponseEntity<ProduccionDTO> saveProduccion(@RequestBody ProduccionDTO produccionDTO) {
+        ProduccionDTO saved = produccionService.save(produccionDTO);
+        return ResponseEntity.ok(saved);
     }
 
-    @GetMapping("/eliminar/{id}")
-    public String deleteProduccion(@PathVariable Long id) {
+    @PostMapping("/{id}/iniciar-produccion")
+    public ResponseEntity<ProduccionDTO> iniciarProduccion(@PathVariable Long id) {
+        ProduccionDTO produccion = produccionServiceImpl.iniciarProduccion(id);
+        return ResponseEntity.ok(produccion);
+    }
+
+
+    // Eliminar producción por ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduccion(@PathVariable Long id) {
         produccionService.deleteById(id);
-        return "redirect:/producciones";
+        return ResponseEntity.noContent().build();
+    }
+
+    // Finalizar producción (nuevo endpoint)
+    @PutMapping("/{id}/finalizar")
+    public ResponseEntity<String> finalizarProduccion(@PathVariable Long id) {
+        try {
+            produccionService.marcarProduccionComoFinalizada(id);
+            return ResponseEntity.ok("Producción marcada como finalizada.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al finalizar la producción: " + e.getMessage());
+        }
     }
 }

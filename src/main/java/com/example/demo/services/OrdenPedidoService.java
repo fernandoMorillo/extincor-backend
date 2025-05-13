@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.models.dto.EstadoPedidoRequestDTO;
+import com.example.demo.models.dto.InsumoDTO;
 import com.example.demo.models.dto.OrdenPedidoDTO;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +48,8 @@ public interface OrdenPedidoService {
      * @return OrdenPedidoDTO actualizado.
      */
     OrdenPedidoDTO cambiarEstado(Long id, EstadoPedidoRequestDTO request);
+
+    void registrarInsumosAProduccion(Long id, Long idProduccion, List<InsumoDTO> insumos);
 
     /**
      * Actualiza la fecha de entrega de una orden.

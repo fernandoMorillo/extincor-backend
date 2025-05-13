@@ -1,12 +1,8 @@
 package com.example.demo.services.impl;
 
 import com.example.demo.models.dto.*;
-import com.example.demo.models.entity.Cliente;
-import com.example.demo.models.entity.OperarioIngreso;
-import com.example.demo.models.entity.OrdenPedido;
-import com.example.demo.repository.ClienteRepository;
-import com.example.demo.repository.OperarioIngresoRepository;
-import com.example.demo.repository.OrdenPedidoRepository;
+import com.example.demo.models.entity.*;
+import com.example.demo.repository.*;
 import com.example.demo.services.OrdenPedidoService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +24,15 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
     private ClienteRepository clienteRepository;
     @Autowired
     private OperarioIngresoRepository operarioIngresoRepository;
+
+    @Autowired
+    private InsumoRepository insumoRepository;
+
+    @Autowired
+    private ProduccionRepository produccionRepository;
+
+    @Autowired
+    private InsumoProduccionRepository insumoProduccionRepository;
 
     @Override
     @Transactional
@@ -95,6 +100,29 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         Long lastNumeroPedido = ordenPedidoRepository.findMaxNumeroPedido();
         Long nextNumero = (lastNumeroPedido != null ? lastNumeroPedido : 0L) + 1;
         return String.format("H%04d", nextNumero);
+    }
+
+    @Override
+    @Transactional
+    public void registrarInsumosAProduccion(Long ordenId, Long produccionId, List<InsumoDTO> insumos) {
+        Produccion produccion = produccionRepository.findById(produccionId)
+                .orElseThrow(() -> new RuntimeException("Producción no encontrada"));
+
+        OrdenPedido orden = ordenPedidoRepository.findById(ordenId)
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
+
+        for (InsumoDTO dto : insumos) {
+            Insumo insumo = insumoRepository.findById(dto.getId())
+                    .orElseThrow(() -> new RuntimeException("Insumo no encontrado"));
+
+            InsumoProduccion ip = new InsumoProduccion();
+            ip.setProduccion(produccion);
+            ip.setOrdenPedido(orden);
+            ip.setInsumo(insumo);
+            ip.setCantidad(dto.getCantidad());
+
+            insumoProduccionRepository.save(ip);
+        }
     }
 
 
@@ -183,6 +211,35 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
             dto.setOperario(operarioIngresoDto);
 
         }
+
+        if (ordenPedido.getProduccion() != null)  {
+            ProduccionDTO produccionDTO = new ProduccionDTO();
+            produccionDTO.setId(ordenPedido.getProduccion().getId());
+            produccionDTO.setCodigoProduccion(ordenPedido.getProduccion().getCodigoProduccion());
+            produccionDTO.setFechaInicio(ordenPedido.getProduccion().getFechaInicio());
+            produccionDTO.setFechaFin(ordenPedido.getProduccion().getFechaFin());
+            produccionDTO.setCantidad_producida(ordenPedido.getProduccion().getCantidad_producida());
+            produccionDTO.setProducto_nombre(ordenPedido.getProduccion().getProducto_nombre());
+            produccionDTO.setEstado(ordenPedido.getProduccion().getEstado());
+            dto.setProduccion(produccionDTO);
+        }
+        if (ordenPedido.getProduccion() != null && ordenPedido.getProduccion().getInsumosProduccion() != null) {
+            List<InsumoDTO> insumosUtilizados = ordenPedido.getProduccion().getInsumosProduccion()
+                    .stream()
+                    .map(insumoProd -> {
+                        InsumoDTO dtoInsumo = new InsumoDTO();
+                        dtoInsumo.setId(insumoProd.getInsumo().getId());
+                        dtoInsumo.setNombre(insumoProd.getInsumo().getNombre());
+                        dtoInsumo.setPrecioUnitario(insumoProd.getInsumo().getPrecioUnitario());
+                        dtoInsumo.setCantidad(insumoProd.getCantidad());
+                        return dtoInsumo;
+                    })
+                    .collect(Collectors.toList());
+
+            dto.setInsumosUtilizados(insumosUtilizados);
+        }
+
+
 
 
         return dto;

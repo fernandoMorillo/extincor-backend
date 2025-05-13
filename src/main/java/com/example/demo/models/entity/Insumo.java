@@ -41,6 +41,10 @@ public class Insumo {
     @OneToMany(mappedBy = "insumo", cascade = CascadeType.ALL)
     private List<Compra> compras;
 
+    @OneToMany(mappedBy = "insumo", cascade = CascadeType.ALL)
+    private List<InsumoProduccion> insumosProduccion;
+
+
     public int getStock() {
         return stock;
     }

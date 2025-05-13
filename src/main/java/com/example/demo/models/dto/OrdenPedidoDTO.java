@@ -5,6 +5,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class OrdenPedidoDTO {
@@ -25,4 +26,7 @@ public class OrdenPedidoDTO {
     private Integer cantidadExtintores;
 
     private OperarioIngresoDto operario;
+    private ProduccionDTO produccion;
+    private List<InsumoDTO> insumosUtilizados;
+
 }

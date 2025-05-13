@@ -47,6 +47,10 @@ public class OrdenPedido {
     @JoinColumn(name = "operario_id")
     private OperarioIngreso operario;
 
+    @OneToOne(mappedBy = "ordenPedido", cascade = CascadeType.ALL)
+    private Produccion produccion;
+
+
     @PrePersist
     public void prePersist() {
         if (fechaPedido == null) {
