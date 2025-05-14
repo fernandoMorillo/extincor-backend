@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/clientes")
-public class ClienteController {
+@RequestMapping("/api/operadores")
+public class OperadorController {
 
     @Autowired
-    private UsuarioServiceImpl usuarioServiceimp;
+    private UsuarioServiceImpl usuarioService;
 
     @GetMapping
-    public List<UsuarioDTO> obtenerClientes() {
-        return usuarioServiceimp.findByTipoUsuario("CLIENTE");
+    public List<UsuarioDTO> obtenerOperadores() {
+        return usuarioService.findByTipoUsuario("OPERADOR");
     }
 
     @PostMapping
-    public Usuario crearCliente(@RequestBody Usuario usuario) {
-        return usuarioServiceimp.guardarUsuarioConRol(usuario, "CLIENTE");
+    public Usuario crearOperador(@RequestBody Usuario usuario) {
+        return usuarioService.guardarUsuarioConRol(usuario, "OPERADOR");
     }
 }

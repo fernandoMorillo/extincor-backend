@@ -1,32 +1,22 @@
 package com.example.demo.models.dto;
 
-import lombok.Data;
+import com.example.demo.models.entity.DetalleCompra;
+import lombok.*;
+
 import java.util.Date;
+import java.util.List;
 
-@Data
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CompraDTO {
-    private Long id;
+    private String id;
+    private Long idSecuencial;
     private String detalle;
-    private String proveedor;
-    private Date fecha_compra;
-    private float monto;
     private String estado;
-    private Long insumo_id;
-    private int cantidadComprada;
+    private Date fechaCompra;
+    private Double monto;
+    private String proveedor;
+    private Integer cantidadComprada;
+    private Long insumoId;
 
-    public Long getInsumo_id() {
-        return insumo_id;
-    }
-
-    public void setInsumo_id(Long insumo_id) {
-        this.insumo_id = insumo_id;
-    }
-
-    public int getCantidadComprada() {
-        return cantidadComprada;
-    }
-
-    public void setCantidadComprada(int cantidadComprada) {
-        this.cantidadComprada = cantidadComprada;
-    }
+    private List<DetalleCompra> detalleCompras;
 }

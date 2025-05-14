@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface InsumoService {
     List<InsumoDTO> findAll();
-    InsumoDTO findById(Long id);
-    InsumoDTO save(InsumoDTO insumoDTO);
-    void deleteById(Long id);
+    InsumoDTO findById(String id);
+    InsumoDTO save(InsumoDTO dto);
+    void deleteById(String id);
 }

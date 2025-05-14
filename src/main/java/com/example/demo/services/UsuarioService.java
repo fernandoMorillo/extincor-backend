@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface UsuarioService {
     List<UsuarioDTO> findAll();
-    UsuarioDTO findById(Long id);
-    UsuarioDTO save(UsuarioDTO usuarioDTO);
-    void deleteById(Long id);
+    UsuarioDTO findById(String id);
+    UsuarioDTO save(UsuarioDTO dto);
+    void deleteById(String id);
 }

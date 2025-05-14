@@ -1,21 +1,11 @@
-    package com.example.demo.models.entity;
+package com.example.demo.models.entity;
 
-    import jakarta.persistence.*;
-    import lombok.Data;
+import lombok.*;
 
-    @Data
-    @Entity
-    @Table(name = "envases")
-    public class Envase {
-
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
-
-        private String tipo;
-        private float capacidad;
-
-        @ManyToOne
-        @JoinColumn(name = "producto_id")
-        private Producto producto;
-    }
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+public class Envase {
+    private Long id;
+    private Double capacidad;
+    private String tipo;
+    private Long productoId;
+}

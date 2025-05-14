@@ -1,11 +1,12 @@
 package com.example.demo.repository;
 
-
 import com.example.demo.models.entity.Insumo;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.example.demo.models.enums.TipoExtintor;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-@Repository
-public interface InsumoRepository extends JpaRepository<Insumo, Long> {
+import java.util.List;
 
+public interface InsumoRepository extends MongoRepository<Insumo, String> {
+
+    List<Insumo> findByTiposExtintorContaining(TipoExtintor tipoExtintor);
 }

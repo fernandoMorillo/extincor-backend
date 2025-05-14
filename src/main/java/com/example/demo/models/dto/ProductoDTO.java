@@ -1,17 +1,23 @@
 package com.example.demo.models.dto;
 
-import lombok.Data;
+import com.example.demo.models.entity.DetallePedido;
+import com.example.demo.models.entity.Envase;
+import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
-@Data
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class ProductoDTO {
-    private Long id;
-    private String codigo; // Campo para el código único
-    private String nombre;
-    private float precio;
-    private String tipo;
-    private float capacidad;
-    private Date fecha_fabricacion;
+    private String id;
+    private Long idSecuencial;
+    private Double capacidad;
+    private String codigo;
     private String estado;
+    private Date fechaFabricacion;
+    private String nombre;
+    private Double precio;
+    private String tipo;
+    private List<DetallePedido> detallePedidos;
+    private List<Envase> envases;
 }

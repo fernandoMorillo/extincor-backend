@@ -1,46 +1,29 @@
 package com.example.demo.models.entity;
 
-import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Date;
 
 @Data
-@NoArgsConstructor
-@Entity
-@Table(name = "produccion")
-public class Produccion implements Serializable {
-
+@Document(collection = "produccion")
+public class Produccion {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private ObjectId id;
 
-    @Column(name = "codigo_produccion", unique = true, nullable = false)
+    private Long idSecuencial;
+    private Integer cantidadProducida;
     private String codigoProduccion;
-
-
-    private LocalDateTime fechaInicio;
-
-
-    private LocalDateTime fechaFin;
-
-    private int cantidad_producida;
-    private String producto_nombre;
     private String estado;
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
+    private String productoNombre;
+    private ObjectId operarioId;
+    private ObjectId ordenPedidoId;
 
-    @ManyToOne
-    @JoinColumn(name = "operario_id", referencedColumnName = "id")
-    private OperarioIngreso operario;
-
-    @OneToMany(mappedBy = "produccion",  cascade = CascadeType.ALL)
-    private List<InsumoProduccion> insumosProduccion;
-
-    @OneToOne
-    @JoinColumn(name = "orden_pedido_id")
-    private OrdenPedido ordenPedido;
-
+    private List<OrdenPedidoEmbed> ordenesPedido;
+    private List<DetallePedidoEmbed> detallePedidos;
+    private List<InsumoProduccionEmbed> insumosProduccion;
 }

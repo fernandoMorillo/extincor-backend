@@ -1,129 +1,62 @@
 package com.example.demo.controller;
 
-import com.example.demo.models.dto.EstadoPedidoRequestDTO;
-import com.example.demo.models.dto.InsumoDTO;
+import com.example.demo.mapper.OrdenPedidoMapper;
 import com.example.demo.models.dto.OrdenPedidoDTO;
+import com.example.demo.repository.OrdenPedidoRepository;
+import com.example.demo.repository.UsuarioRepository;
 import com.example.demo.services.OrdenPedidoService;
-import com.example.demo.services.ClienteService;
-
-import com.example.demo.services.ProduccionService;
-import com.example.demo.services.impl.OrdenPedidoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/ordenes")
+@RequestMapping("/api/ordenes-pedido")
 public class OrdenPedidoController {
 
     @Autowired
-    private OrdenPedidoService ordenPedidoService;
+    private OrdenPedidoService service;
+    @Autowired
+    private OrdenPedidoRepository ordenPedidoRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private ClienteService clienteService;
-    @Autowired
-    private ProduccionService produccionService;
-    @Autowired
-    private OrdenPedidoServiceImpl ordenPedidoServiceImpl;
+    private OrdenPedidoMapper mapper;
 
-    // Listar todas las órdenes
-    @GetMapping
-    public ResponseEntity<List<OrdenPedidoDTO>> listOrdenes() {
-        return ResponseEntity.ok(ordenPedidoService.findAll());
-    }
 
-    // Obtener una orden por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getOrdenById(@PathVariable Long id) {
-        OrdenPedidoDTO orden = ordenPedidoService.findById(id);
-        if (orden == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(orden);
-    }
-
-    // Crear una nueva orden
     @PostMapping
-    public ResponseEntity<?> createOrden(@RequestBody OrdenPedidoDTO ordenPedidoDTO) {
-        try {
-            List<OrdenPedidoDTO> creadas = ordenPedidoService.save(ordenPedidoDTO);
-            return ResponseEntity.ok(creadas);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al crear la orden.");
-        }
+    public ResponseEntity<OrdenPedidoDTO> crear(@RequestBody OrdenPedidoDTO dto) {
+        return ResponseEntity.ok(service.crearOrden(dto));
     }
 
-    @PostMapping("/{ordenId}/producciones/{produccionId}/insumos")
-    public ResponseEntity<?> registrarInsumos(
-            @PathVariable Long ordenId,
-            @PathVariable Long produccionId,
-            @RequestBody List<InsumoDTO> insumos
-    ) {
-        System.out.println("informacion llegando del id: " +  ordenId + produccionId + insumos);
-        ordenPedidoServiceImpl.registrarInsumosAProduccion(ordenId, produccionId, insumos);
-        return ResponseEntity.ok("Insumos registrados correctamente");
+    @GetMapping
+    public List<OrdenPedidoDTO> listar() {
+        return ordenPedidoRepository.findAll().stream().map(orden -> {
+            OrdenPedidoDTO dto = mapper.toDTO(orden); // usa el mapper correctamente
+
+            // Agrega el nombre del cliente si existe
+            usuarioRepository.findById(orden.getClienteId())
+                    .ifPresent(usuario -> {
+                        dto.setClienteNombre(usuario.getNombre());
+                        System.out.println("Cliente encontrado: " + usuario.getNombre()); // Depuración
+                    });
+
+            // Depuración para verificar si otros campos están vacíos
+            System.out.println("Detalle pedidos: " + orden.getDetallePedidos());
+            System.out.println("Estado pedido: " + orden.getEstadoPedido());
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 
-
-    // Actualizar una orden existente
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateOrden(@PathVariable Long id, @RequestBody OrdenPedidoDTO ordenPedidoDTO) {
-        try {
-            ordenPedidoDTO.setId(id);
-            ordenPedidoService.save(ordenPedidoDTO);
-            return ResponseEntity.ok("Orden actualizada exitosamente");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al actualizar la orden.");
-        }
-    }
-
-    // Eliminar una orden
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOrden(@PathVariable Long id) {
-        ordenPedidoService.deleteById(id);
-        return ResponseEntity.ok("Orden eliminada exitosamente");
-    }
-
-    // Cambiar el estado de la orden
-    @PutMapping("/{id}/estado")
-    public ResponseEntity<?> cambiarEstado(@PathVariable Long id, @RequestBody EstadoPedidoRequestDTO request) {
-
-        try {
-            OrdenPedidoDTO ordenActualizada = ordenPedidoService.cambiarEstado(id, request);
-            return ResponseEntity.ok(ordenActualizada);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al cambiar el estado de la orden.");
-        }
-    }
-
-    // Actualizar la fecha de entrega
-    @PatchMapping("/{id}/fecha-entrega")
-    public ResponseEntity<?> actualizarFechaEntrega(@PathVariable Long id, @RequestParam String nuevaFechaEntrega) {
-        try {
-            Date nuevaFecha = Date.valueOf(nuevaFechaEntrega);
-            OrdenPedidoDTO ordenActualizada = ordenPedidoService.actualizarFechaEntrega(id, nuevaFecha);
-            return ResponseEntity.ok(ordenActualizada);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al actualizar la fecha de entrega.");
-        }
-    }
-
-    @PutMapping("/{ordenId}/asignar-operario/{operarioId}")
-    public ResponseEntity<?> asignarOperario(
-            @PathVariable Long ordenId,
-            @PathVariable Long operarioId
-    ) {
-        ordenPedidoService.asignarOperario(ordenId, operarioId);
-        return ResponseEntity.ok().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<OrdenPedidoDTO> obtenerPorId(@PathVariable String id) {
+        OrdenPedidoDTO dto = service.obtenerOrdenPorId(id);
+        return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 
 
-    // Listar todos los clientes (opcional, si necesitas en el frontend)
-    @GetMapping("/clientes")
-    public ResponseEntity<?> listClientes() {
-        return ResponseEntity.ok(clienteService.findAll());
-    }
 }

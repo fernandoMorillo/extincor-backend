@@ -1,77 +1,32 @@
 package com.example.demo.models.entity;
 
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+@Document(collection = "ordenesPedido")
 @Data
-@Entity
-@Table(name = "ordenes_pedido")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrdenPedido {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "numeroPedido", unique = true, nullable = false)
-    private Long numeroPedido;
-
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_pedido")
-    private Date fechaPedido;
-
-    @Column(name = "estado_pedido", nullable = false)
+    private String id;
     private String estadoPedido;
-
-    @Column(name = "tipo_servicio")
+    private LocalDateTime fechaEntrega;
+    private LocalDateTime fechaPedido;
+    private Double montoTotal;
+    private String numeroPedido;
+    private String clienteId;
+    private String observacion;
+    private String operarioId;
     private String tipoServicio;
 
-
-    @Column(name = "monto_total")
-    private float montoTotal;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_entrega")
-    private Date fechaEntrega;
-
-    @Column(name = "observacion")
-    private String observacion;
-
-    @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
-
-    @ManyToOne
-    @JoinColumn(name = "operario_id")
-    private OperarioIngreso operario;
-
-    @OneToOne(mappedBy = "ordenPedido", cascade = CascadeType.ALL)
-    private Produccion produccion;
-
-
-    @PrePersist
-    public void prePersist() {
-        if (fechaPedido == null) {
-            fechaPedido = new Date();
-        }
-    }
-
-
-    public String getEstadoPedido() {
-        return estadoPedido;
-    }
-
-    public void setEstadoPedido(String estadoPedido) {
-        this.estadoPedido = estadoPedido;
-    }
-
-    public Long getNumeroPedido() {
-        return numeroPedido;
-    }
-
-    public void setNumeroPedido(Long numeroPedido) {
-        this.numeroPedido = numeroPedido ;
-    }
+    private List<DetallePedidoEmbed> detallePedidos;
+    private List<InsumoProduccionEmbed> insumosProduccion;
 }

@@ -1,9 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.models.entity.Compra;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-@Repository
-public interface CompraRepository extends JpaRepository<Compra, Long> {
+public interface CompraRepository extends MongoRepository<Compra, String> {
 }

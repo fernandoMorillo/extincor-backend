@@ -1,55 +1,32 @@
 package com.example.demo.models.entity;
 
-import jakarta.persistence.*;
+import com.example.demo.models.enums.TipoExtintor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@Entity
-@Table(name = "insumos")
+@Document(collection = "insumos")
 public class Insumo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
+    private Long idSecuencial;
+    private Integer cantidad;
+    private LocalDateTime fechaIngreso;
     private String nombre;
-
-    @Column(nullable = false)
-    private int stock;
-
-    private int cantidad;
+    private Integer precioUnitario;
+    private Integer stock;
+    private Integer stockMinimo;
     private String unidades;
 
-    private int precioUnitario;
-    private int stockMinimo = 15;
-
-
-
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fechaIngreso;
-
-    @OneToMany(mappedBy = "insumo", cascade = CascadeType.ALL)
-    private List<DetalleCompra> detalleCompras;
-
-    @OneToMany(mappedBy = "insumo", cascade = CascadeType.ALL)
-    private List<Compra> compras;
-
-    @OneToMany(mappedBy = "insumo", cascade = CascadeType.ALL)
     private List<InsumoProduccion> insumosProduccion;
-
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
+    private List<OrdenPedidoEmbed> ordenesPedido;
+    private List<DetalleCompra> detalleCompras;
+    private List<TipoExtintor> tiposExtintor;
 }

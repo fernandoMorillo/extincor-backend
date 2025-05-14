@@ -1,17 +1,24 @@
 package com.example.demo.models.dto;
 
+import com.example.demo.models.entity.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class InsumoDTO {
-    private Long id;
+    private String id;
+    private Long idSecuencial;
+    private Integer cantidad;
+    private LocalDateTime fechaIngreso;
     private String nombre;
-    private int stock;
-    private int cantidad;
+    private Integer precioUnitario;
+    private Integer stock;
+    private Integer stockMinimo;
     private String unidades;
-    private int precioUnitario;
-    private int stockMinimo = 15;
-    private Date fechaIngreso;
+
+    private List<InsumoProduccion> insumosProduccion;
+    private List<OrdenPedidoEmbed> ordenesPedido;
+    private List<DetalleCompra> detalleCompras;
 }

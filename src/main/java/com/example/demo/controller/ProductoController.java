@@ -3,40 +3,40 @@ package com.example.demo.controller;
 import com.example.demo.models.dto.ProductoDTO;
 import com.example.demo.services.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/productos")
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/productos")
 public class ProductoController {
 
     @Autowired
     private ProductoService productoService;
 
     @GetMapping
-    public String listProductos(Model model) {
-        model.addAttribute("productos", productoService.findAll());
-        model.addAttribute("producto", new ProductoDTO()); // Objeto para el formulario de creación
-        return "productos"; // Vista única
+    public List<ProductoDTO> getAll() {
+        return productoService.findAll();
     }
 
-    @PostMapping("/guardar")
-    public String saveOrUpdateProducto(@ModelAttribute ProductoDTO productoDTO) {
-        productoService.save(productoDTO);
-        return "redirect:/productos";
+    @GetMapping("/{id}")
+    public ProductoDTO getById(@PathVariable String id) {
+        return productoService.findById(id);
     }
 
-    @GetMapping("/editar/{id}")
-    public String editProducto(@PathVariable Long id, Model model) {
-        model.addAttribute("productos", productoService.findAll());
-        model.addAttribute("producto", productoService.findById(id)); // Objeto específico para edición
-        return "productos";
+    @PostMapping
+    public ProductoDTO create(@RequestBody ProductoDTO dto) {
+        return productoService.save(dto);
     }
 
-    @GetMapping("/eliminar/{id}")
-    public String deleteProducto(@PathVariable Long id) {
+    @PutMapping("/{id}")
+    public ProductoDTO update(@PathVariable String id, @RequestBody ProductoDTO dto) {
+        dto.setId(id);
+        return productoService.save(dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable String id) {
         productoService.deleteById(id);
-        return "redirect:/productos";
     }
 }

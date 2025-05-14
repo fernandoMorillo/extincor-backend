@@ -29,6 +29,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         // Buscar usuario en la base de datos
+
+        System.out.println("texto llegando; " + authRequest.getCorreo());
         Optional<Usuario> usuarioOptional = usuarioRepository.findByCorreo(authRequest.getCorreo());
 
         if (usuarioOptional.isEmpty()) {

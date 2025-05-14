@@ -1,33 +1,25 @@
 package com.example.demo.models.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Date;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@Entity
-@Table(name = "compras")
+@Document(collection = "compras")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Compra {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private String id;
+    private Long idSecuencial;
     private String detalle;
-    private String proveedor;
-    private float monto;
     private String estado;
-    @Temporal(TemporalType.DATE)
-    private Date fecha_compra;
+    private Date fechaCompra;
+    private Double monto;
+    private String proveedor;
+    private Integer cantidadComprada;
+    private Long insumoId;
 
-    @Column(nullable = false)
-    private int cantidadComprada;
-
-    @ManyToOne
-    private Insumo insumo;
-
-
+    private List<DetalleCompra> detalleCompras;
 }

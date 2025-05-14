@@ -1,53 +1,41 @@
 package com.example.demo.models.entity;
 
-import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
-@NoArgsConstructor
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_usuario", discriminatorType = DiscriminatorType.STRING)
-@Table(name = "usuarios")
+@Document(collection = "usuarios")
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    private String nombre;
-    private String correo;
-    private String password;
-
-    @Column(name = "tipo_usuario", insertable = false, updatable = false)
     private String tipoUsuario;
-
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Long idSecuencial;
+    private String correo;
     private Date fechaCreacion;
+    private String nombre;
+    private String password;
+    @Field("telefono_usuario")
+    private String telefono;
+    @Field("direccion_usuario")
+    private String direccion;
+    @Field("especialidad_usuario")
+    private String especialidad;
+    @Field("estado_usuario")
+    private String estado;
 
-    @PrePersist
-    protected void onCreate() {
-        this.fechaCreacion = new Date();
-    }
+    private Long ventanaId;
+    private String tipoCliente;
 
-    public String getCorreo() {
-        return correo;
-    }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
 
-    public String getPassword() {
-        return password;
-    }
+    private List<OrdenPedido> ordenesPedidos;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+
 }

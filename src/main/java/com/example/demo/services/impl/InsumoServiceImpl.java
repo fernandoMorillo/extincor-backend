@@ -1,75 +1,84 @@
-    package com.example.demo.services.impl;
+package com.example.demo.services.impl;
 
-    import com.example.demo.models.dto.InsumoDTO;
-    import com.example.demo.models.entity.Insumo;
-    import com.example.demo.repository.InsumoRepository;
-    import com.example.demo.services.InsumoService;
-    import jakarta.transaction.Transactional;
-    import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.stereotype.Service;
+import com.example.demo.models.dto.InsumoDTO;
+import com.example.demo.models.entity.Insumo;
+import com.example.demo.models.enums.TipoExtintor;
+import com.example.demo.repository.InsumoRepository;
+import com.example.demo.services.InsumoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-    import java.util.List;
-    import java.util.stream.Collectors;
+import java.util.List;
+import java.util.stream.Collectors;
 
-    @Service
-    public class InsumoServiceImpl implements InsumoService {
+@Service
+public class InsumoServiceImpl implements InsumoService {
 
-        @Autowired
-        private InsumoRepository insumoRepository;
+    @Autowired
+    private InsumoRepository insumoRepository;
 
-        @Override
-        @Transactional
-        public List<InsumoDTO> findAll() {
-            return insumoRepository.findAll()
-                    .stream()
-                    .map(this::convertToDTO)
-                    .collect(Collectors.toList());
-        }
-
-        @Override
-        @Transactional
-        public InsumoDTO findById(Long id) {
-            Insumo insumo = insumoRepository.findById(id).orElse(null);
-            return insumo != null ? convertToDTO(insumo) : null;
-        }
-
-        @Override
-        @Transactional
-        public InsumoDTO save(InsumoDTO insumoDTO) {
-            Insumo insumo = convertToEntity(insumoDTO);
-            Insumo savedInsumo = insumoRepository.save(insumo);
-            return convertToDTO(savedInsumo);
-        }
-
-        @Override
-        @Transactional
-        public void deleteById(Long id) {
-            insumoRepository.deleteById(id);
-        }
-
-        private InsumoDTO convertToDTO(Insumo insumo) {
-            InsumoDTO dto = new InsumoDTO();
-            dto.setId(insumo.getId());
-            dto.setNombre(insumo.getNombre());
-            dto.setStock(insumo.getStock());
-            dto.setCantidad(insumo.getCantidad());
-            dto.setUnidades(insumo.getUnidades());
-            dto.setPrecioUnitario(insumo.getPrecioUnitario());
-            dto.setStockMinimo(insumo.getStockMinimo());
-            dto.setFechaIngreso(insumo.getFechaIngreso());
-            return dto;
-        }
-
-        private Insumo convertToEntity(InsumoDTO insumoDTO) {
-            Insumo insumo = new Insumo();
-            insumo.setId(insumoDTO.getId());
-            insumo.setNombre(insumoDTO.getNombre());
-            insumo.setStock(insumoDTO.getStock());
-            insumo.setCantidad(insumoDTO.getCantidad());
-            insumo.setUnidades(insumoDTO.getUnidades());
-            insumo.setPrecioUnitario(insumoDTO.getPrecioUnitario());
-            insumo.setStockMinimo(insumoDTO.getStockMinimo());
-            insumo.setFechaIngreso(insumoDTO.getFechaIngreso());
-            return insumo;
-        }
+    @Override
+    public List<InsumoDTO> findAll() {
+        return insumoRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
+
+    @Override
+    public InsumoDTO findById(String id) {
+        return insumoRepository.findById(id)
+                .map(this::toDTO)
+                .orElse(null);
+    }
+
+    @Override
+    public InsumoDTO save(InsumoDTO dto) {
+        Insumo insumo = toEntity(dto);
+        Insumo saved = insumoRepository.save(insumo);
+        return toDTO(saved);
+    }
+
+    @Override
+    public void deleteById(String id) {
+        insumoRepository.deleteById(id);
+    }
+
+    public List<Insumo> obtenerPorTipoExtintor(TipoExtintor tipo) {
+        return insumoRepository.findByTiposExtintorContaining(tipo);
+    }
+
+    private InsumoDTO toDTO(Insumo entity) {
+        InsumoDTO dto = new InsumoDTO();
+        dto.setId(entity.getId());
+        dto.setIdSecuencial(entity.getIdSecuencial());
+        dto.setCantidad(entity.getCantidad());
+        dto.setFechaIngreso(entity.getFechaIngreso());
+        dto.setNombre(entity.getNombre());
+        dto.setPrecioUnitario(entity.getPrecioUnitario());
+        dto.setStock(entity.getStock());
+        dto.setStockMinimo(entity.getStockMinimo());
+        dto.setUnidades(entity.getUnidades());
+        dto.setInsumosProduccion(entity.getInsumosProduccion());
+        dto.setOrdenesPedido(entity.getOrdenesPedido());
+        dto.setDetalleCompras(entity.getDetalleCompras());
+        return dto;
+    }
+
+    private Insumo toEntity(InsumoDTO dto) {
+        Insumo entity = new Insumo();
+        entity.setId(dto.getId());
+        entity.setIdSecuencial(dto.getIdSecuencial());
+        entity.setCantidad(dto.getCantidad());
+        entity.setFechaIngreso(dto.getFechaIngreso());
+        entity.setNombre(dto.getNombre());
+        entity.setPrecioUnitario(dto.getPrecioUnitario());
+        entity.setStock(dto.getStock());
+        entity.setStockMinimo(dto.getStockMinimo());
+        entity.setUnidades(dto.getUnidades());
+        entity.setInsumosProduccion(dto.getInsumosProduccion());
+        entity.setOrdenesPedido(dto.getOrdenesPedido());
+        entity.setDetalleCompras(dto.getDetalleCompras());
+        return entity;
+    }
+}
