@@ -1,15 +1,21 @@
 package com.example.demo.controller;
 
 import com.example.demo.mapper.OrdenPedidoMapper;
+import com.example.demo.models.dto.AsignacionOperadorDTO;
 import com.example.demo.models.dto.OrdenPedidoDTO;
+import com.example.demo.models.entity.OrdenPedido;
 import com.example.demo.repository.OrdenPedidoRepository;
 import com.example.demo.repository.UsuarioRepository;
 import com.example.demo.services.OrdenPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,6 +31,8 @@ public class OrdenPedidoController {
 
     @Autowired
     private OrdenPedidoMapper mapper;
+    @Autowired
+    private OrdenPedidoService ordenPedidoService;
 
 
     @PostMapping
@@ -33,30 +41,51 @@ public class OrdenPedidoController {
     }
 
     @GetMapping
-    public List<OrdenPedidoDTO> listar() {
-        return ordenPedidoRepository.findAll().stream().map(orden -> {
-            OrdenPedidoDTO dto = mapper.toDTO(orden); // usa el mapper correctamente
+    public Page<OrdenPedidoDTO> listar(Pageable pageable) {
+        return ordenPedidoRepository.findAll(pageable)
+                .map(orden -> {
+                    OrdenPedidoDTO dto = mapper.toDTO(orden);
 
-            // Agrega el nombre del cliente si existe
-            usuarioRepository.findById(orden.getClienteId())
-                    .ifPresent(usuario -> {
-                        dto.setClienteNombre(usuario.getNombre());
-                        System.out.println("Cliente encontrado: " + usuario.getNombre()); // Depuración
-                    });
+                    if (orden.getClienteId() != null) {
+                        usuarioRepository.findById(orden.getClienteId())
+                                .ifPresent(usuario -> dto.setClienteNombre(usuario.getNombre()));
+                    }
 
-            // Depuración para verificar si otros campos están vacíos
-            System.out.println("Detalle pedidos: " + orden.getDetallePedidos());
-            System.out.println("Estado pedido: " + orden.getEstadoPedido());
+                    if (orden.getOperarioId() != null) {
+                        usuarioRepository.findById(orden.getOperarioId())
+                                .ifPresent(usuario -> dto.setOperarioNombre(usuario.getNombre()));
+                    }
 
-            return dto;
-        }).collect(Collectors.toList());
+                    return dto;
+                });
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<OrdenPedidoDTO> obtenerPorId(@PathVariable String id) {
         OrdenPedidoDTO dto = service.obtenerOrdenPorId(id);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
+
+    @PutMapping("/{ordenId}/asignar-operador/{operadorId}")
+    public ResponseEntity<String> asignarOperador(
+            @PathVariable String ordenId,
+            @PathVariable String operadorId) {
+
+        Optional<OrdenPedido> optionalOrden = ordenPedidoRepository.findById(ordenId);
+
+        if (optionalOrden.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Orden no encontrada");
+        }
+
+        OrdenPedido orden = optionalOrden.get();
+        orden.setOperarioId(operadorId);
+        ordenPedidoRepository.save(orden);
+
+        return ResponseEntity.ok("Operador asignado correctamente");
+    }
+
 
 
 }

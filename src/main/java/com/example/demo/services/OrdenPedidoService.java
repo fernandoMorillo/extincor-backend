@@ -9,4 +9,6 @@ public interface OrdenPedidoService {
     OrdenPedidoDTO crearOrden(OrdenPedidoDTO orden);
     List<OrdenPedidoDTO> obtenerTodas();
     OrdenPedidoDTO obtenerOrdenPorId(String id);
+    void asignarOperador(String ordenId, String operadorId);
+
 }

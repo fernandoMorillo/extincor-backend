@@ -3,11 +3,8 @@ package com.example.demo.services.impl;
 import com.example.demo.mapper.OrdenPedidoMapper;
 import com.example.demo.models.dto.DetallePedidoDTO;
 import com.example.demo.models.dto.InsumoProduccionDTO;
-import com.example.demo.models.entity.DetallePedido;
+import com.example.demo.models.entity.*;
 import com.example.demo.models.dto.OrdenPedidoDTO;
-import com.example.demo.models.entity.DetallePedidoEmbed;
-import com.example.demo.models.entity.InsumoProduccionEmbed;
-import com.example.demo.models.entity.OrdenPedido;
 import com.example.demo.repository.OrdenPedidoRepository;
 import com.example.demo.repository.UsuarioRepository;
 import com.example.demo.services.OrdenPedidoService;
@@ -25,8 +22,7 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
 
     @Autowired
     private OrdenPedidoMapper mapper;
-    @Autowired
-    private OrdenPedidoService ordenPedidoService;
+
     @Autowired
     private OrdenPedidoRepository ordenPedidoRepository;
     @Autowired
@@ -62,16 +58,16 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
                 .operarioId(String.valueOf(orden.getOperarioId()))
                 .tipoServicio(orden.getTipoServicio())
                 .detallePedidos(orden.getDetallePedidos() != null ? orden.getDetallePedidos().stream()
-                        .map(d -> DetallePedidoDTO.builder()
+                        .map(d -> DetallePedidoEmbed.builder()
                                 .id(d.getId())
                                 .cantidad(d.getCantidad())
                                 .build()).collect(Collectors.toList()) : null)
                 .insumosProduccion(orden.getInsumosProduccion() != null ? orden.getInsumosProduccion().stream()
-                        .map(i -> InsumoProduccionDTO.builder()
+                        .map(i -> InsumoProduccionEmbed.builder()
                                 .id(i.getId())
                                 .cantidad(i.getCantidad())
                                 .estado(i.getEstado())
-                                .ordenPedidoId(String.valueOf(i.getOrdenPedidoId()))
+                                .ordenPedidoId(Long.valueOf(String.valueOf(i.getOrdenPedidoId())))
                                 .build()).collect(Collectors.toList()) : null)
                 .build()).collect(Collectors.toList());
     }
@@ -96,5 +92,22 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
                 })
                 .orElse(null);
     }
+
+    @Override
+    public void asignarOperador(String ordenId, String operadorId) {
+        OrdenPedido orden = ordenPedidoRepository.findById(ordenId)
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
+
+        Usuario operador = usuarioRepository.findById(operadorId)
+                .orElseThrow(() -> new RuntimeException("Operador no encontrado"));
+
+        if (!operador.getTipoUsuario().equalsIgnoreCase("OPERADOR")) {
+            throw new RuntimeException("El usuario no es un operador");
+        }
+
+        orden.setOperarioId(operadorId);
+        ordenPedidoRepository.save(orden);
+    }
+
 
 }
