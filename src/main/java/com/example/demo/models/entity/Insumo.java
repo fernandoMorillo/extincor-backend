@@ -28,5 +28,5 @@ public class Insumo {
     private List<InsumoProduccion> insumosProduccion;
     private List<OrdenPedidoEmbed> ordenesPedido;
     private List<DetalleCompra> detalleCompras;
-    private List<TipoExtintor> tiposExtintor;
+    private TipoExtintor tiposExtintor;
 }

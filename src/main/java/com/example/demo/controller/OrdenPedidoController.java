@@ -37,6 +37,7 @@ public class OrdenPedidoController {
 
     @PostMapping
     public ResponseEntity<OrdenPedidoDTO> crear(@RequestBody OrdenPedidoDTO dto) {
+        System.out.println("información: " + dto);
         return ResponseEntity.ok(service.crearOrden(dto));
     }
 

@@ -1,6 +1,7 @@
 package com.example.demo.models.dto;
 
 import com.example.demo.models.entity.*;
+import com.example.demo.models.enums.TipoExtintor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -21,4 +22,126 @@ public class InsumoDTO {
     private List<InsumoProduccion> insumosProduccion;
     private List<OrdenPedidoEmbed> ordenesPedido;
     private List<DetalleCompra> detalleCompras;
+    private TipoExtintor tiposExtintor;
+
+
+    public InsumoDTO(String id, Long idSecuencial, Integer cantidad, LocalDateTime fechaIngreso, String nombre, Integer stock, Integer precioUnitario, Integer stockMinimo, String unidades, List<InsumoProduccion> insumosProduccion, List<OrdenPedidoEmbed> ordenesPedido, List<DetalleCompra> detalleCompras, TipoExtintor tiposExtintor) {
+        this.id = id;
+        this.idSecuencial = idSecuencial;
+        this.cantidad = cantidad;
+        this.fechaIngreso = fechaIngreso;
+        this.nombre = nombre;
+        this.stock = stock;
+        this.precioUnitario = precioUnitario;
+        this.stockMinimo = stockMinimo;
+        this.unidades = unidades;
+        this.insumosProduccion = insumosProduccion;
+        this.ordenesPedido = ordenesPedido;
+        this.detalleCompras = detalleCompras;
+        this.tiposExtintor = tiposExtintor;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Long getIdSecuencial() {
+        return idSecuencial;
+    }
+
+    public void setIdSecuencial(Long idSecuencial) {
+        this.idSecuencial = idSecuencial;
+    }
+
+    public Integer getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public LocalDateTime getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public void setFechaIngreso(LocalDateTime fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Integer getPrecioUnitario() {
+        return precioUnitario;
+    }
+
+    public void setPrecioUnitario(Integer precioUnitario) {
+        this.precioUnitario = precioUnitario;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
+    public Integer getStockMinimo() {
+        return stockMinimo;
+    }
+
+    public void setStockMinimo(Integer stockMinimo) {
+        this.stockMinimo = stockMinimo;
+    }
+
+    public String getUnidades() {
+        return unidades;
+    }
+
+    public void setUnidades(String unidades) {
+        this.unidades = unidades;
+    }
+
+    public List<InsumoProduccion> getInsumosProduccion() {
+        return insumosProduccion;
+    }
+
+    public void setInsumosProduccion(List<InsumoProduccion> insumosProduccion) {
+        this.insumosProduccion = insumosProduccion;
+    }
+
+    public List<OrdenPedidoEmbed> getOrdenesPedido() {
+        return ordenesPedido;
+    }
+
+    public void setOrdenesPedido(List<OrdenPedidoEmbed> ordenesPedido) {
+        this.ordenesPedido = ordenesPedido;
+    }
+
+    public List<DetalleCompra> getDetalleCompras() {
+        return detalleCompras;
+    }
+
+    public void setDetalleCompras(List<DetalleCompra> detalleCompras) {
+        this.detalleCompras = detalleCompras;
+    }
+
+    public TipoExtintor getTiposExtintor() {
+        return tiposExtintor;
+    }
+
+    public void setTiposExtintor(TipoExtintor tiposExtintor) {
+        this.tiposExtintor = tiposExtintor;
+    }
 }

@@ -31,7 +31,7 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
     @Override
     public OrdenPedidoDTO crearOrden(OrdenPedidoDTO dto) {
         OrdenPedido orden = mapper.toEntity(dto);
-
+        System.out.println("tipoExtintor que llega: " + orden.getTipoExtintor());
         orden = repository.save(orden);
 
         String numeroPedidoGenerado = "#Orden" + orden.getId().substring(orden.getId().length() - 6);
@@ -57,6 +57,7 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
                 .observacion(orden.getObservacion())
                 .operarioId(String.valueOf(orden.getOperarioId()))
                 .tipoServicio(orden.getTipoServicio())
+                .tipoExtintor(orden.getTipoExtintor())
                 .detallePedidos(orden.getDetallePedidos() != null ? orden.getDetallePedidos().stream()
                         .map(d -> DetallePedidoEmbed.builder()
                                 .id(d.getId())

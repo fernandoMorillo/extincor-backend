@@ -3,6 +3,7 @@ package com.example.demo.models.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.demo.models.enums.TipoExtintor;
 import lombok.Data;
 
 @Data
@@ -18,5 +19,6 @@ public class OrdenPedidoEmbed {
     private String observacion;
     private Long operarioId;
     private String tipoServicio;
+    private TipoExtintor tipoExtintor;
     private List<DetallePedidoEmbed> detallePedidos;
 }

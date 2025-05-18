@@ -25,7 +25,13 @@ public class ProduccionController {
         return produccionService.findById(id);
     }
 
-    @PostMapping
+    @PutMapping("/{id}")
+    public ProduccionDTO update(@PathVariable String id, @RequestBody ProduccionDTO dto) {
+        dto.setId(id);
+        return produccionService.save(dto);
+    }
+
+    @PostMapping("/{id}/iniciar-produccion")
     public ProduccionDTO create(@RequestBody ProduccionDTO dto) {
         return produccionService.save(dto);
     }
