@@ -1,8 +1,11 @@
 package com.example.demo.services.impl;
 
+import com.example.demo.mapper.ProduccionMapper;
 import com.example.demo.models.dto.ProduccionDTO;
+import com.example.demo.models.entity.DetallePedidoEmbed;
 import com.example.demo.models.entity.OrdenPedidoEmbed;
 import com.example.demo.models.entity.Produccion;
+import com.example.demo.repository.OrdenPedidoRepository;
 import com.example.demo.repository.ProduccionRepository;
 import com.example.demo.services.ProduccionService;
 import org.bson.types.ObjectId;
@@ -18,92 +21,46 @@ public class ProduccionServiceImpl implements ProduccionService {
     @Autowired
     private ProduccionRepository produccionRepository;
 
+    @Autowired
+    private ProduccionMapper produccionMapper;
+    @Autowired
+    private OrdenPedidoRepository ordenPedidoRepository;
+
     @Override
     public List<ProduccionDTO> findAll() {
         return produccionRepository.findAll()
                 .stream()
-                .map(this::toDTO)
+                .map(produccionMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ProduccionDTO findById(String id) {
-
-        return produccionRepository.findById(new ObjectId(id))
-                .map(this::toDTO)
+        return produccionRepository.findById(id)
+                .map(produccionMapper::toDTO)
                 .orElse(null);
     }
 
     @Override
     public ProduccionDTO save(ProduccionDTO dto) {
-        Produccion produccion = toEntity(dto);
+        Produccion produccion = produccionMapper.toEntity(dto);
+        System.out.println("produccion que llega 2: " + produccion);
+
         Produccion saved = produccionRepository.save(produccion);
-        return toDTO(saved);
+        String produccionId = saved.getId(); // Asegúrate de usar el ID del objeto guardado
+
+        ordenPedidoRepository.findById(saved.getOrdenPedidoId()).ifPresent(orden -> {
+            // Agregar el ID de la producción a la orden de pedido
+            orden.setProduccionId(produccionId); // ← Asegúrate de tener este campo en la entidad OrdenPedido
+            ordenPedidoRepository.save(orden);
+        });
+
+        return produccionMapper.toDTO(saved);
     }
+
 
     @Override
     public void deleteById(String id) {
-        produccionRepository.deleteById(new ObjectId(id));
-    }
-
-    private ProduccionDTO toDTO(Produccion entity) {
-        ProduccionDTO dto = new ProduccionDTO();
-
-        if (entity.getId() != null) {
-            dto.setId(entity.getId().toHexString());
-        }
-
-        dto.setIdSecuencial(entity.getIdSecuencial());
-        dto.setCantidadProducida(entity.getCantidadProducida());
-        dto.setCodigoProduccion(entity.getCodigoProduccion());
-        dto.setEstado(entity.getEstado());
-        dto.setFechaInicio(entity.getFechaInicio());
-        dto.setFechaFin(entity.getFechaFin());
-        dto.setProductoNombre(entity.getProductoNombre());
-
-        if (entity.getOperarioId() != null) {
-            dto.setOperarioId(entity.getOperarioId().toHexString());
-        }
-
-        if (entity.getOrdenPedidoId() != null) {
-            dto.setOrdenPedidoId(entity.getOrdenPedidoId().toHexString());
-        }
-
-        dto.setOrdenesPedido((OrdenPedidoEmbed) entity.getOrdenesPedido());
-        dto.setDetallePedidos(entity.getDetallePedidos());
-        dto.setInsumosProduccion(entity.getInsumosProduccion());
-
-        return dto;
-    }
-
-
-    private Produccion toEntity(ProduccionDTO dto) {
-        Produccion entity = new Produccion();
-
-        if (dto.getId() != null && !dto.getId().isEmpty()) {
-            entity.setId(new ObjectId(dto.getId()));
-        }
-
-        entity.setIdSecuencial(dto.getIdSecuencial());
-        entity.setCantidadProducida(dto.getCantidadProducida());
-        entity.setCodigoProduccion(dto.getCodigoProduccion());
-        entity.setEstado(dto.getEstado());
-        entity.setFechaInicio(dto.getFechaInicio());
-        entity.setFechaFin(dto.getFechaFin());
-        entity.setProductoNombre(dto.getProductoNombre());
-
-        if (dto.getOperarioId() != null && !dto.getOperarioId().isEmpty()) {
-            entity.setOperarioId(new ObjectId(dto.getOperarioId()));
-        }
-
-        if (dto.getOrdenPedidoId() != null && !dto.getOrdenPedidoId().isEmpty()) {
-            entity.setOrdenPedidoId(new ObjectId(dto.getOrdenPedidoId()));
-        }
-
-        entity.setOrdenesPedido((List<OrdenPedidoEmbed>) dto.getOrdenesPedido());
-        entity.setDetallePedidos(dto.getDetallePedidos());
-        entity.setInsumosProduccion(dto.getInsumosProduccion());
-
-        return entity;
+        produccionRepository.deleteById(id);
     }
 }

@@ -6,16 +6,20 @@ import com.example.demo.models.dto.InsumoProduccionDTO;
 import com.example.demo.models.entity.*;
 import com.example.demo.models.dto.OrdenPedidoDTO;
 import com.example.demo.repository.OrdenPedidoRepository;
+import com.example.demo.repository.ProduccionRepository;
 import com.example.demo.repository.UsuarioRepository;
 import com.example.demo.services.OrdenPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class OrdenPedidoServiceImpl implements OrdenPedidoService {
+
+    private static final int MAX_EXTINTORES_POR_DIA = 100;
 
     @Autowired
     private OrdenPedidoRepository repository;
@@ -27,11 +31,23 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
     private OrdenPedidoRepository ordenPedidoRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private ProduccionRepository produccionRepository;
 
     @Override
     public OrdenPedidoDTO crearOrden(OrdenPedidoDTO dto) {
+        LocalDate fecha = LocalDate.from(dto.getFechaPedido());
+        int cantidadSolicitada = dto.getCantidad();
+
+        List<OrdenPedido> pedidosDelDia = ordenPedidoRepository.findByFechaPedido(fecha);
+        int totalDelDia = pedidosDelDia.stream().mapToInt(OrdenPedido::getCantidad).sum();
+
+        if ((totalDelDia + cantidadSolicitada) > MAX_EXTINTORES_POR_DIA) {
+            throw new IllegalArgumentException("Capacidad máxima de extintores por día superada.");
+        }
+
+
         OrdenPedido orden = mapper.toEntity(dto);
-        System.out.println("tipoExtintor que llega: " + orden.getTipoExtintor());
         orden = repository.save(orden);
 
         String numeroPedidoGenerado = "#Orden" + orden.getId().substring(orden.getId().length() - 6);
@@ -42,6 +58,40 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         return mapper.toDTO(orden);
     }
 
+    @Override
+    public void agregarInsumosProduccion(String ordenId, String produccionId, List<InsumoProduccionDTO> insumosDTO) {
+
+        List<InsumoProduccionEmbed> insumos = insumosDTO.stream().map(dto -> {
+            InsumoProduccionEmbed embed = new InsumoProduccionEmbed();
+            embed.setInsumoId(dto.getInsumoId());
+            embed.setCantidad(dto.getCantidad());
+            embed.setOrdenPedidoId(dto.getOrdenPedidoId());
+            embed.setEstado(dto.getEstado());
+            embed.setProduccionId(dto.getProduccionId());
+            return embed;
+        }).collect(Collectors.toList());
+
+
+        OrdenPedido orden = ordenPedidoRepository.findById(ordenId)
+                .orElseThrow(() -> new RuntimeException("Orden de pedido no encontrada: " + ordenId));
+        orden.setInsumosProduccion(insumos);
+        ordenPedidoRepository.save(orden);
+
+
+        Produccion produccion = produccionRepository.findById(produccionId)
+                .orElseThrow(() -> new RuntimeException("Producción no encontrada: " + produccionId));
+        produccion.setInsumosProduccion(insumos);
+        produccionRepository.save(produccion);
+    }
+
+    @Override
+    public void actualizarEstado(String id, String nuevoEstado) {
+        OrdenPedido orden = ordenPedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Orden de pedido no encontrada con id: " + id));
+
+        orden.setEstadoPedido(nuevoEstado);
+        ordenPedidoRepository.save(orden);
+    }
 
 
     @Override
@@ -58,6 +108,7 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
                 .operarioId(String.valueOf(orden.getOperarioId()))
                 .tipoServicio(orden.getTipoServicio())
                 .tipoExtintor(orden.getTipoExtintor())
+                .produccionId(orden.getProduccionId() != null ? String.valueOf(orden.getProduccionId()) : null)
                 .detallePedidos(orden.getDetallePedidos() != null ? orden.getDetallePedidos().stream()
                         .map(d -> DetallePedidoEmbed.builder()
                                 .id(d.getId())
@@ -68,7 +119,7 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
                                 .id(i.getId())
                                 .cantidad(i.getCantidad())
                                 .estado(i.getEstado())
-                                .ordenPedidoId(Long.valueOf(String.valueOf(i.getOrdenPedidoId())))
+                                .ordenPedidoId(i.getOrdenPedidoId())
                                 .build()).collect(Collectors.toList()) : null)
                 .build()).collect(Collectors.toList());
     }

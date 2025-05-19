@@ -22,8 +22,10 @@ public class InsumoServiceImpl implements InsumoService {
 
     @Override
     public List<InsumoDTO> findAll() {
-        List<Insumo> insumos = insumoRepository.findAll();
-        return insumoMapper.toDTOList(insumos);
+        return insumoRepository.findAll()
+                .stream()
+                .map(insumoMapper::toDTO)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override

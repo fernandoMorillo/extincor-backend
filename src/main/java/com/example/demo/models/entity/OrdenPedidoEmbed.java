@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class OrdenPedidoEmbed {
 
-    private Long id;
+    private String id;
     private String estadoPedido;
     private LocalDate fechaEntrega;
     private LocalDate fechaPedido;

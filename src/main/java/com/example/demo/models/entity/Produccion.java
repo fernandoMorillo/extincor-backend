@@ -10,8 +10,7 @@ import java.util.List;
 @Data
 @Document(collection = "produccion")
 public class Produccion {
-    @Id
-    private ObjectId id;
+    private String id;
 
     private Long idSecuencial;
     private Integer cantidadProducida;
@@ -20,10 +19,10 @@ public class Produccion {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private String productoNombre;
-    private ObjectId operarioId;
-    private ObjectId ordenPedidoId;
+    private String operarioId;
+    private String ordenPedidoId;
 
-    private List<OrdenPedidoEmbed> ordenesPedido;
+
     private List<DetallePedidoEmbed> detallePedidos;
     private List<InsumoProduccionEmbed> insumosProduccion;
 }

@@ -14,32 +14,34 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface InsumoMapper {
 
-    @Mapping(source = "tiposExtintor", target = "tiposExtintor")
-    InsumoDTO toDTO(Insumo insumo);
-
-    @Mapping(source = "tiposExtintor", target = "tiposExtintor")
-    List<InsumoDTO> toDTOList(List<Insumo> insumos);
-
-    // DTO a Entidad
-    @Mapping(source = "tiposExtintor", target = "tiposExtintor")
-    Insumo toEntity(InsumoDTO dto);
-
-    @Mapping(source = "tiposExtintor", target = "tiposExtintor")
-    List<Insumo> toEntityList(List<InsumoDTO> dtos);
-
-    // Métodos de conversión personalizados
-
-    @Named("enumListToStringList")
-    static List<String> enumListToStringList(List<TipoExtintor> enums) {
-        return enums == null ? null : enums.stream()
-                .map(TipoExtintor::name)
-                .collect(Collectors.toList());
+default InsumoDTO toDTO(Insumo insumo) {
+    if (insumo == null) {
+        return null;
     }
+    InsumoDTO dto = new InsumoDTO();
+    dto.setId(insumo.getId());
+    dto.setNombre(insumo.getNombre());
+    dto.setTiposExtintor(insumo.getTiposExtintor());
+    dto.setCantidad(insumo.getCantidad());
+    dto.setPrecioUnitario(insumo.getPrecioUnitario());
+    dto.setUnidades(insumo.getUnidades());
+    dto.setStock(insumo.getStock());
+    return dto;
+}
 
-    @Named("stringListToEnumList")
-    static List<TipoExtintor> stringListToEnumList(List<String> strings) {
-        return strings == null ? null : strings.stream()
-                .map(s -> TipoExtintor.valueOf(s.toUpperCase()))
-                .collect(Collectors.toList());
+default Insumo toEntity(InsumoDTO dto) {
+    if (dto == null) {
+        return null;
     }
+    Insumo entity = new Insumo();
+    entity.setId(dto.getId());
+    entity.setNombre(dto.getNombre());
+    entity.setTiposExtintor(dto.getTiposExtintor());
+    entity.setCantidad(dto.getCantidad());
+    entity.setPrecioUnitario(dto.getPrecioUnitario());
+    entity.setUnidades(dto.getUnidades());
+    entity.setStock(dto.getStock());
+    return entity;
+}
+
 }

@@ -1,32 +1,28 @@
 package com.example.demo.models.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class InsumoProduccionEmbed {
-    private Long id;
+    private String id;
     private Integer cantidad;
-    private Long insumoId;
-    private Long produccionId;
+    private String insumoId;
+    private String produccionId;
     private String estado;
-    private Long ordenPedidoId;
+    private String ordenPedidoId;
 
-    public InsumoProduccionEmbed(Long id, Integer cantidad, Long insumoId, Long produccionId, String estado, Long ordenPedidoId) {
-        this.id = id;
-        this.cantidad = cantidad;
-        this.insumoId = insumoId;
-        this.produccionId = produccionId;
-        this.estado = estado;
-        this.ordenPedidoId = ordenPedidoId;
-    }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -38,19 +34,19 @@ public class InsumoProduccionEmbed {
         this.cantidad = cantidad;
     }
 
-    public Long getInsumoId() {
+    public String getInsumoId() {
         return insumoId;
     }
 
-    public void setInsumoId(Long insumoId) {
+    public void setInsumoId(String insumoId) {
         this.insumoId = insumoId;
     }
 
-    public Long getProduccionId() {
+    public String getProduccionId() {
         return produccionId;
     }
 
-    public void setProduccionId(Long produccionId) {
+    public void setProduccionId(String produccionId) {
         this.produccionId = produccionId;
     }
 
@@ -62,11 +58,11 @@ public class InsumoProduccionEmbed {
         this.estado = estado;
     }
 
-    public Long getOrdenPedidoId() {
+    public String getOrdenPedidoId() {
         return ordenPedidoId;
     }
 
-    public void setOrdenPedidoId(Long ordenPedidoId) {
+    public void setOrdenPedidoId(String ordenPedidoId) {
         this.ordenPedidoId = ordenPedidoId;
     }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,9 @@ public class OrdenPedido {
     private String operarioId;
     private String tipoServicio;
     private TipoExtintor tipoExtintor;
+    private String produccionId;
+    private LocalTime horaEntrega;
+    private int cantidad;
 
     private List<DetallePedidoEmbed> detallePedidos;
     private List<InsumoProduccionEmbed> insumosProduccion;
@@ -126,5 +130,37 @@ public class OrdenPedido {
 
     public void setTipoExtintor(TipoExtintor tipoExtintor) {
         this.tipoExtintor = tipoExtintor;
+    }
+
+    public String getProduccionId() {
+        return produccionId;
+    }
+
+    public void setProduccionId(String produccionId) {
+        this.produccionId = produccionId;
+    }
+
+    public String getTipoServicio() {
+        return tipoServicio;
+    }
+
+    public void setTipoServicio(String tipoServicio) {
+        this.tipoServicio = tipoServicio;
+    }
+
+    public LocalTime getHoraEntrega() {
+        return horaEntrega;
+    }
+
+    public void setHoraEntrega(LocalTime horaEntrega) {
+        this.horaEntrega = horaEntrega;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 }

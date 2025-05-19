@@ -32,7 +32,8 @@ public class ProduccionController {
     }
 
     @PostMapping("/{id}/iniciar-produccion")
-    public ProduccionDTO create(@RequestBody ProduccionDTO dto) {
+    public ProduccionDTO create(@PathVariable String id, @RequestBody ProduccionDTO dto) {
+        dto.setId(id); // Asignar el ID de la URL al DTO
         return produccionService.save(dto);
     }
 

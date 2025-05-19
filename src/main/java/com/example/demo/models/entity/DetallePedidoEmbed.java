@@ -7,30 +7,30 @@ import lombok.Data;
 @Data
 @Builder
 public class DetallePedidoEmbed {
-    private Long id;
+    private String id;
     private Integer cantidad;
-    private Long ordenPedidoId;
-    private Long produccionId;
-    private Long productoId;
-    private Long total;
+    private String ordenPedidoId;
+    private String produccionId;
+    private String productoId;
+    private String total;
 
 
     public DetallePedidoEmbed() {}
 
-    public DetallePedidoEmbed(Long id, Integer cantidad, Long ordenPedidoId, Long produccionId, Long productoId, Long total) {
+    public DetallePedidoEmbed(String id, Integer cantidad, String ordenPedidoId, String produccionId, String total, String productoId) {
         this.id = id;
         this.cantidad = cantidad;
         this.ordenPedidoId = ordenPedidoId;
         this.produccionId = produccionId;
-        this.productoId = productoId;
         this.total = total;
+        this.productoId = productoId;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -42,35 +42,35 @@ public class DetallePedidoEmbed {
         this.cantidad = cantidad;
     }
 
-    public Long getOrdenPedidoId() {
+    public String getOrdenPedidoId() {
         return ordenPedidoId;
     }
 
-    public void setOrdenPedidoId(Long ordenPedidoId) {
+    public void setOrdenPedidoId(String ordenPedidoId) {
         this.ordenPedidoId = ordenPedidoId;
     }
 
-    public Long getTotal() {
-        return total;
-    }
-
-    public void setTotal(Long total) {
-        this.total = total;
-    }
-
-    public Long getProductoId() {
-        return productoId;
-    }
-
-    public void setProductoId(Long productoId) {
-        this.productoId = productoId;
-    }
-
-    public Long getProduccionId() {
+    public String getProduccionId() {
         return produccionId;
     }
 
-    public void setProduccionId(Long produccionId) {
+    public void setProduccionId(String produccionId) {
         this.produccionId = produccionId;
+    }
+
+    public String getProductoId() {
+        return productoId;
+    }
+
+    public void setProductoId(String productoId) {
+        this.productoId = productoId;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
     }
 }

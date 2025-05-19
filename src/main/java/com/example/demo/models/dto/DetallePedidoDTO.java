@@ -12,18 +12,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class DetallePedidoDTO {
-    private Long id;
+    private String id;
     private int cantidad;
     private OrdenPedidoDTO ordenpedido;  // Campo para almacenar la ID de OrdenPedido
     private ProductoDTO producto; // Incluye ProductoDTO para asociar el producto
     private ProduccionDTO produccion;
 
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

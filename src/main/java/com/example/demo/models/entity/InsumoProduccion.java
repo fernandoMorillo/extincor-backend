@@ -4,10 +4,10 @@ import lombok.Data;
 
 @Data
 public class InsumoProduccion {
-    private Long id;
-    private Long cantidad;
-    private Long insumoId;
-    private Long produccionId;
+    private String id;
+    private int cantidad;
+    private String insumoId;
+    private String produccionId;
     private String estado;
-    private Long ordenPedidoId;
+    private String ordenPedidoId;
 }

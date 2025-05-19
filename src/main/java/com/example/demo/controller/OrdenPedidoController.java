@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.mapper.OrdenPedidoMapper;
-import com.example.demo.models.dto.AsignacionOperadorDTO;
+import com.example.demo.models.dto.InsumoProduccionDTO;
 import com.example.demo.models.dto.OrdenPedidoDTO;
 import com.example.demo.models.entity.OrdenPedido;
 import com.example.demo.repository.OrdenPedidoRepository;
@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/ordenes-pedido")
@@ -36,9 +36,12 @@ public class OrdenPedidoController {
 
 
     @PostMapping
-    public ResponseEntity<OrdenPedidoDTO> crear(@RequestBody OrdenPedidoDTO dto) {
-        System.out.println("información: " + dto);
-        return ResponseEntity.ok(service.crearOrden(dto));
+    public ResponseEntity<?> crear(@RequestBody OrdenPedidoDTO dto) {
+        try {
+            return ResponseEntity.ok(service.crearOrden(dto));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok(e.getMessage());
+        }
     }
 
     @GetMapping
@@ -85,6 +88,23 @@ public class OrdenPedidoController {
         ordenPedidoRepository.save(orden);
 
         return ResponseEntity.ok("Operador asignado correctamente");
+    }
+
+    @PostMapping("/{ordenId}/producciones/{produccionId}/insumos")
+    public ResponseEntity<String> agregarInsumosProduccion(
+            @PathVariable String ordenId,
+            @PathVariable String produccionId,
+            @RequestBody List<InsumoProduccionDTO> insumosDTO) {
+
+        ordenPedidoService.agregarInsumosProduccion(ordenId, produccionId, insumosDTO);
+        return ResponseEntity.ok("Insumos agregados correctamente a la orden y a la producción.");
+    }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<String> actualizarEstado(@PathVariable String id, @RequestBody Map<String, String> estadoRequest) {
+        String nuevoEstado = estadoRequest.get("estadoPedido");
+        ordenPedidoService.actualizarEstado(id, nuevoEstado);
+        return ResponseEntity.ok("Estado actualizado correctamente");
     }
 
 

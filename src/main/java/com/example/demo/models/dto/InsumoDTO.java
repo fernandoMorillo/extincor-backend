@@ -25,22 +25,6 @@ public class InsumoDTO {
     private TipoExtintor tiposExtintor;
 
 
-    public InsumoDTO(String id, Long idSecuencial, Integer cantidad, LocalDateTime fechaIngreso, String nombre, Integer stock, Integer precioUnitario, Integer stockMinimo, String unidades, List<InsumoProduccion> insumosProduccion, List<OrdenPedidoEmbed> ordenesPedido, List<DetalleCompra> detalleCompras, TipoExtintor tiposExtintor) {
-        this.id = id;
-        this.idSecuencial = idSecuencial;
-        this.cantidad = cantidad;
-        this.fechaIngreso = fechaIngreso;
-        this.nombre = nombre;
-        this.stock = stock;
-        this.precioUnitario = precioUnitario;
-        this.stockMinimo = stockMinimo;
-        this.unidades = unidades;
-        this.insumosProduccion = insumosProduccion;
-        this.ordenesPedido = ordenesPedido;
-        this.detalleCompras = detalleCompras;
-        this.tiposExtintor = tiposExtintor;
-    }
-
     public String getId() {
         return id;
     }

@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class InsumoProduccionDTO {
-    private Long id;
+    private String id;
     private int cantidad;
-    private InsumoDTO insumo;        // Objeto Insumo para incluir detalles del insumo
-    private ProduccionDTO produccion; // Objeto Produccion para incluir detalles de la producción
+    private String insumoId;
+    private String produccionId;
     private String estado;
     private String ordenPedidoId;
 }
