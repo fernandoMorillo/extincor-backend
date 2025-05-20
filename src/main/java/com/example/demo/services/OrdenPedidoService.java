@@ -4,6 +4,7 @@ package com.example.demo.services;
 import com.example.demo.models.dto.InsumoProduccionDTO;
 import com.example.demo.models.dto.OrdenPedidoDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface OrdenPedidoService {
@@ -13,4 +14,7 @@ public interface OrdenPedidoService {
     void asignarOperador(String ordenId, String operadorId);
     void agregarInsumosProduccion(String ordenId, String produccionId, List<InsumoProduccionDTO> insumosDTO);
     void actualizarEstado(String id, String nuevoEstado);
+    OrdenPedidoDTO actualizarOrdenPedido(String id, OrdenPedidoDTO dto);
+    void eliminarOrdenPedido(String id);
+    long contarOrdenesPorFechaEntrega(LocalDate fechaEntrega);
 }

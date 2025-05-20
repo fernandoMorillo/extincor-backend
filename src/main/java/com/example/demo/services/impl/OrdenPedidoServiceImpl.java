@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,6 +162,39 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
 
         orden.setOperarioId(operadorId);
         ordenPedidoRepository.save(orden);
+    }
+
+    @Override
+    public OrdenPedidoDTO actualizarOrdenPedido(String id, OrdenPedidoDTO dto) {
+        OrdenPedido orden = ordenPedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada con ID: " + id));
+
+        orden.setClienteId(dto.getClienteId());
+        orden.setTipoExtintor(dto.getTipoExtintor());
+
+
+        OrdenPedido ordenActualizada = ordenPedidoRepository.save(orden);
+        return mapper.toDTO(ordenActualizada);
+
+    }
+
+    @Override
+    public void eliminarOrdenPedido(String id) {
+        if (!ordenPedidoRepository.existsById(id)) {
+            throw new RuntimeException("Orden no encontrada con ID: " + id);
+        }
+        ordenPedidoRepository.deleteById(id);
+    }
+
+    @Override
+    public long contarOrdenesPorFechaEntrega(LocalDate fechaEntrega) {
+        ZonedDateTime startZdt = fechaEntrega.atStartOfDay(ZoneId.of("UTC"));
+        ZonedDateTime endZdt = fechaEntrega.plusDays(1).atStartOfDay(ZoneId.of("UTC"));
+
+        Date startDate = Date.from(startZdt.toInstant());
+        Date endDate = Date.from(endZdt.toInstant());
+
+        return ordenPedidoRepository.countByFechaEntrega(startDate, endDate);
     }
 
 

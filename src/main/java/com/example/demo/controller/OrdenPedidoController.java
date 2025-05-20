@@ -10,10 +10,12 @@ import com.example.demo.services.OrdenPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -107,6 +109,22 @@ public class OrdenPedidoController {
         return ResponseEntity.ok("Estado actualizado correctamente");
     }
 
+    @PutMapping("/actualizar-orden/{id}")
+    public ResponseEntity<OrdenPedidoDTO> actualizarOrden(@PathVariable String id, @RequestBody OrdenPedidoDTO dto) {
+        OrdenPedidoDTO actualizada = ordenPedidoService.actualizarOrdenPedido(id, dto);
+        return ResponseEntity.ok(actualizada);
+    }
 
+    @DeleteMapping("/eliminar-orden/{id}")
+    public ResponseEntity<Void> eliminarOrden(@PathVariable String id) {
+        ordenPedidoService.eliminarOrdenPedido(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/count-by-fecha-entrega")
+    public ResponseEntity<Long> contarOrdenesPorFechaEntrega(@RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
+        long count = ordenPedidoService.contarOrdenesPorFechaEntrega(fecha);
+        return ResponseEntity.ok(count);
+    }
 
 }
