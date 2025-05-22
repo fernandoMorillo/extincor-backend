@@ -46,7 +46,7 @@ public class AuthController {
 
         // Generar token JWT
         String token = jwtUtil.generateToken(usuario.getCorreo());
-        AuthResponse response = new AuthResponse(token, usuario.getCorreo(), usuario.getTipoUsuario());
+        AuthResponse response = new AuthResponse(token, usuario.getCorreo(), usuario.getTipoUsuario(), usuario.getNombre(), usuario.getId());
 
         return ResponseEntity.ok(response);
     }

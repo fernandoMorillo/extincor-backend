@@ -30,16 +30,18 @@ public class OrdenPedidoDTO {
     private String operarioId;
     private String tipoServicio;
     private String clienteNombre;
+    private String clienteEmail;
     private String operarioNombre;
     private TipoExtintor tipoExtintor;
     private String produccionId;
     private LocalTime horaEntrega;
     private int cantidad;
+    private LocalDateTime fechaFin;
 
     private List<DetallePedidoEmbed> detallePedidos;
     private List<InsumoProduccionEmbed> insumosProduccion;
 
-    public OrdenPedidoDTO(String id, String numeroPedido, String estadoPedido, LocalDateTime fechaEntrega, LocalDateTime fechaPedido, Double montoTotal, String clienteId, String observacion, String operarioId, String tipoServicio, String clienteNombre, String operarioNombre, TipoExtintor tipoExtintor, List<DetallePedidoEmbed> detallePedidos, String produccionId, List<InsumoProduccionEmbed> insumosProduccion, LocalTime horaEntrega, int cantidad) {
+    public OrdenPedidoDTO(String id, String numeroPedido, String estadoPedido, LocalDateTime fechaEntrega, LocalDateTime fechaPedido, Double montoTotal, String clienteId, String observacion, String operarioId, String tipoServicio, String clienteNombre, String operarioNombre, TipoExtintor tipoExtintor, List<DetallePedidoEmbed> detallePedidos, String produccionId, List<InsumoProduccionEmbed> insumosProduccion, LocalTime horaEntrega, int cantidad, String clienteEmail) {
         this.id = id;
         this.numeroPedido = numeroPedido;
         this.estadoPedido = estadoPedido;
@@ -58,6 +60,7 @@ public class OrdenPedidoDTO {
         this.insumosProduccion = insumosProduccion;
         this.horaEntrega = horaEntrega;
         this.cantidad = cantidad;
+        this.clienteEmail = clienteEmail;
     }
 
     public String getId() {
@@ -202,5 +205,13 @@ public class OrdenPedidoDTO {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public String getClienteEmail() {
+        return clienteEmail;
+    }
+
+    public void setClienteEmail(String clienteEmail) {
+        this.clienteEmail = clienteEmail;
     }
 }

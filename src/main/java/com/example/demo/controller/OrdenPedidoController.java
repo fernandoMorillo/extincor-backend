@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.mapper.OrdenPedidoMapper;
 import com.example.demo.models.dto.InsumoProduccionDTO;
+import com.example.demo.models.dto.OrdenFinalizacionDTO;
 import com.example.demo.models.dto.OrdenPedidoDTO;
 import com.example.demo.models.entity.OrdenPedido;
 import com.example.demo.repository.OrdenPedidoRepository;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -126,5 +128,36 @@ public class OrdenPedidoController {
         long count = ordenPedidoService.contarOrdenesPorFechaEntrega(fecha);
         return ResponseEntity.ok(count);
     }
+
+    @PostMapping("/finalizar-orden/{id}")
+    public ResponseEntity<?> finalizarOrden(
+            @PathVariable String id,
+            @RequestBody OrdenFinalizacionDTO dto) {
+        try {
+            if (dto.getCorreoCliente() == null || dto.getCorreoCliente().isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("mensaje", "El correo del cliente no puede estar vacío."));
+            }
+
+            if (dto.getNombreCliente() == null || dto.getNombreCliente().isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("mensaje", "El nombre del cliente no puede estar vacío."));
+            }
+
+            OrdenPedidoDTO ordenFinalizada = ordenPedidoService.finalizarOrden(id, dto);
+            return ResponseEntity.ok(ordenFinalizada);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("mensaje", "Orden no encontrada."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("mensaje", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("mensaje", "Error inesperado al finalizar la orden."));
+        }
+    }
+
+
 
 }

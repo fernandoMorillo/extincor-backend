@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 
 import com.example.demo.models.dto.InsumoProduccionDTO;
+import com.example.demo.models.dto.OrdenFinalizacionDTO;
 import com.example.demo.models.dto.OrdenPedidoDTO;
 
 import java.time.LocalDate;
@@ -17,4 +18,5 @@ public interface OrdenPedidoService {
     OrdenPedidoDTO actualizarOrdenPedido(String id, OrdenPedidoDTO dto);
     void eliminarOrdenPedido(String id);
     long contarOrdenesPorFechaEntrega(LocalDate fechaEntrega);
+    OrdenPedidoDTO finalizarOrden(String idOrden, OrdenFinalizacionDTO dto);
 }

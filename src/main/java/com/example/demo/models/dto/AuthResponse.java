@@ -16,9 +16,9 @@ public class AuthResponse {
     @JsonProperty("usuario")
     private UserResponse userResponse;
 
-    public AuthResponse( String token, String correo, String roles ) {
+    public AuthResponse( String token, String correo, String roles, String nombre, String id ) {
         this.token = token;
-        this.userResponse = new UserResponse(correo, roles);
+        this.userResponse = new UserResponse(correo, roles, nombre, id);
     }
 
     public String getToken() {
@@ -35,10 +35,14 @@ public class AuthResponse {
     public static class UserResponse {
         private String correo;
         private String roles;
+        private String nombre;
+        private String id;
 
-        public UserResponse(String correo, String roles) {
+        public UserResponse(String correo, String roles, String nombre, String id) {
             this.correo = correo;
             this.roles = roles;
+            this.nombre = nombre;
+            this.id = id;
         }
 
         public String getCorreo() {
@@ -47,6 +51,22 @@ public class AuthResponse {
 
         public String getRoles() {
             return roles;
+        }
+
+        public String getNombre() {
+            return nombre;
+        }
+
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
     }
 }

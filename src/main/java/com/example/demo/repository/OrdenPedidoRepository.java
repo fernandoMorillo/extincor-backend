@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -22,5 +23,6 @@ public interface OrdenPedidoRepository extends MongoRepository<OrdenPedido, Stri
 
    // @Query("{ 'fechaEntrega' : { $gte: ?0, $lt: ?1 } }")
     long countByFechaEntrega(Date startOfDay, Date endOfDay);
+
 
 }

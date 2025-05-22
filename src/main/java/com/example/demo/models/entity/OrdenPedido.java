@@ -31,6 +31,7 @@ public class OrdenPedido {
     private TipoExtintor tipoExtintor;
     private String produccionId;
     private LocalTime horaEntrega;
+    private LocalDateTime fechaFin;
     private int cantidad;
 
     private List<DetallePedidoEmbed> detallePedidos;

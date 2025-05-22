@@ -28,6 +28,7 @@ public interface OrdenPedidoMapper {
         dto.setInsumosProduccion(orden.getInsumosProduccion());
         dto.setHoraEntrega(orden.getHoraEntrega());
         dto.setCantidad(orden.getCantidad());
+
         return dto;
     }
 
@@ -51,6 +52,8 @@ public interface OrdenPedidoMapper {
         entity.setInsumosProduccion(dto.getInsumosProduccion());
         entity.setHoraEntrega(dto.getHoraEntrega());
         entity.setCantidad(dto.getCantidad());
+
+
         return entity;
     }
 
