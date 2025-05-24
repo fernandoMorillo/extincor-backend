@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class Producto {
     private Double capacidad;
     private String codigo;
     private String estado;
-    private Date fechaFabricacion;
+    private LocalDateTime fechaFabricacion;
     private String nombre;
     private Double precio;
     private String tipo;

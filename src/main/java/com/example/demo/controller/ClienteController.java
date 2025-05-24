@@ -25,4 +25,15 @@ public class ClienteController {
     public Usuario crearCliente(@RequestBody Usuario usuario) {
         return usuarioServiceimp.guardarUsuarioConRol(usuario, "CLIENTE");
     }
+
+    @PutMapping("/{id}")
+    public UsuarioDTO update(@PathVariable String id, @RequestBody UsuarioDTO dto) {
+        dto.setId(id);
+        return usuarioServiceimp.save(dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable String id) {
+        usuarioServiceimp.deleteById(id);
+    }
 }

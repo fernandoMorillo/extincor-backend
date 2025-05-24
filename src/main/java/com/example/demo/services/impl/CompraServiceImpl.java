@@ -2,7 +2,9 @@ package com.example.demo.services.impl;
 
 import com.example.demo.models.dto.CompraDTO;
 import com.example.demo.models.entity.Compra;
+import com.example.demo.models.entity.Insumo;
 import com.example.demo.repository.CompraRepository;
+import com.example.demo.repository.InsumoRepository;
 import com.example.demo.services.CompraService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ public class CompraServiceImpl implements CompraService {
 
     @Autowired
     private CompraRepository compraRepository;
+
+    @Autowired
+    private InsumoRepository insumoRepository;
 
     @Override
     public List<CompraDTO> findAll() {
@@ -29,9 +34,22 @@ public class CompraServiceImpl implements CompraService {
     @Override
     public CompraDTO save(CompraDTO dto) {
         Compra entity = toEntity(dto);
+
+        // Obtener el insumo relacionado
+        Insumo insumo = insumoRepository.findById(dto.getInsumoId())
+                .orElseThrow(() -> new RuntimeException("Insumo no encontrado con ID: " + dto.getInsumoId()));
+
+        // Actualizar stock
+        int nuevoStock = insumo.getStock() + dto.getCantidadComprada();
+        insumo.setStock(nuevoStock);
+        insumoRepository.save(insumo);
+
+        // Guardar la compra
         Compra saved = compraRepository.save(entity);
+
         return toDTO(saved);
     }
+
 
     @Override
     public void deleteById(String id) {

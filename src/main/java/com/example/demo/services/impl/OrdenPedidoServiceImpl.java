@@ -6,9 +6,7 @@ import com.example.demo.models.dto.InsumoProduccionDTO;
 import com.example.demo.models.dto.OrdenFinalizacionDTO;
 import com.example.demo.models.entity.*;
 import com.example.demo.models.dto.OrdenPedidoDTO;
-import com.example.demo.repository.OrdenPedidoRepository;
-import com.example.demo.repository.ProduccionRepository;
-import com.example.demo.repository.UsuarioRepository;
+import com.example.demo.repository.*;
 import com.example.demo.services.OrdenPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -22,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +42,12 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
     private ProduccionRepository produccionRepository;
     @Autowired
     private EmailServiceImpl emailServiceImpl;
+
+    @Autowired
+    private InsumoRepository insumoRepository;
+
+    @Autowired
+    private ProductoRepository productoRepository;
 
 
     @Override
@@ -104,6 +109,30 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
             embed.setProduccionId(dto.getProduccionId());
             return embed;
         }).collect(Collectors.toList());
+
+
+        for (InsumoProduccionDTO dto : insumosDTO) {
+            Insumo insumo = insumoRepository.findById(dto.getInsumoId())
+                    .orElseThrow(() -> new RuntimeException("Insumo no encontrado: " + dto.getInsumoId()));
+
+            // Verificar stock disponible
+            if (insumo.getStock() < dto.getCantidad()) {
+                throw new RuntimeException("Stock insuficiente para el insumo: " + insumo.getNombre());
+            }
+
+            // Descontar del stock
+            insumo.setStock(insumo.getStock() - dto.getCantidad());
+            insumoRepository.save(insumo); // Guardar insumo actualizado
+
+            // Construir embed
+            InsumoProduccionEmbed embed = new InsumoProduccionEmbed();
+            embed.setInsumoId(dto.getInsumoId());
+            embed.setCantidad(dto.getCantidad());
+            embed.setOrdenPedidoId(dto.getOrdenPedidoId());
+            embed.setEstado(dto.getEstado());
+            embed.setProduccionId(dto.getProduccionId());
+            insumos.add(embed);
+        }
 
 
         OrdenPedido orden = ordenPedidoRepository.findById(ordenId)
@@ -248,11 +277,9 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         OrdenPedido orden = ordenPedidoRepository.findById(idOrden)
                 .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
 
-
         orden.setEstadoPedido("FINALIZADA");
         orden.setFechaFin(LocalDateTime.now());
         ordenPedidoRepository.save(orden);
-
 
         String produccionId = orden.getProduccionId();
         if (produccionId != null) {
@@ -262,9 +289,23 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
             produccion.setEstado("FINALIZADA");
             produccion.setFechaFin(LocalDate.from(LocalDateTime.now()));
             produccionRepository.save(produccion);
+
+
+            Producto producto = new Producto();
+            producto.setFechaFabricacion(produccion.getFechaFin().atStartOfDay());
+            producto.setNombre(produccion.getProductoNombre());
+            producto.setEstado("DISPONIBLE");
+            producto.setTipo("EXTINTOR");
+            producto.setCodigo(UUID.randomUUID().toString());
+            producto.setCapacidad(10.0);
+            producto.setPrecio(0.0);
+            producto.setDetallePedidos(new ArrayList<>());
+            producto.setEnvases(new ArrayList<>());
+
+            productoRepository.save(producto);
         }
 
-        // 3. Enviar correo al cliente
+        // ✅ Enviar correo al cliente
         String nombreCliente = dto.getNombreCliente();
         String correoCliente = dto.getCorreoCliente();
 
@@ -279,6 +320,7 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
 
         return mapper.toDTO(orden);
     }
+
 
     public String generarContenidoCorreo(String nombreCliente, String numeroPedido) {
         String plantilla = """

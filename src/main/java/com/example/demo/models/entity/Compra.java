@@ -19,7 +19,7 @@ public class Compra {
     private Double monto;
     private String proveedor;
     private Integer cantidadComprada;
-    private Long insumoId;
+    private String insumoId;
 
     private List<DetalleCompra> detalleCompras;
 }

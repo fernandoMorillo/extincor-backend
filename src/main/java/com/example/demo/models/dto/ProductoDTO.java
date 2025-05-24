@@ -4,6 +4,7 @@ import com.example.demo.models.entity.DetallePedido;
 import com.example.demo.models.entity.Envase;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class ProductoDTO {
     private Double capacidad;
     private String codigo;
     private String estado;
-    private Date fechaFabricacion;
+    private LocalDateTime fechaFabricacion;
     private String nombre;
     private Double precio;
     private String tipo;
