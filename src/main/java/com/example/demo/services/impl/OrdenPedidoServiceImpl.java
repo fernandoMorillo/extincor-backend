@@ -110,42 +110,29 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
             return embed;
         }).collect(Collectors.toList());
 
-
         for (InsumoProduccionDTO dto : insumosDTO) {
             Insumo insumo = insumoRepository.findById(dto.getInsumoId())
                     .orElseThrow(() -> new RuntimeException("Insumo no encontrado: " + dto.getInsumoId()));
 
-            // Verificar stock disponible
             if (insumo.getStock() < dto.getCantidad()) {
                 throw new RuntimeException("Stock insuficiente para el insumo: " + insumo.getNombre());
             }
 
-            // Descontar del stock
             insumo.setStock(insumo.getStock() - dto.getCantidad());
-            insumoRepository.save(insumo); // Guardar insumo actualizado
-
-            // Construir embed
-            InsumoProduccionEmbed embed = new InsumoProduccionEmbed();
-            embed.setInsumoId(dto.getInsumoId());
-            embed.setCantidad(dto.getCantidad());
-            embed.setOrdenPedidoId(dto.getOrdenPedidoId());
-            embed.setEstado(dto.getEstado());
-            embed.setProduccionId(dto.getProduccionId());
-            insumos.add(embed);
+            insumoRepository.save(insumo);
         }
-
 
         OrdenPedido orden = ordenPedidoRepository.findById(ordenId)
                 .orElseThrow(() -> new RuntimeException("Orden de pedido no encontrada: " + ordenId));
         orden.setInsumosProduccion(insumos);
         ordenPedidoRepository.save(orden);
 
-
         Produccion produccion = produccionRepository.findById(produccionId)
                 .orElseThrow(() -> new RuntimeException("Producción no encontrada: " + produccionId));
         produccion.setInsumosProduccion(insumos);
         produccionRepository.save(produccion);
     }
+
 
     @Override
     public void actualizarEstado(String id, String nuevoEstado) {
