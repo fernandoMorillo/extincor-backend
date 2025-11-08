@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -41,7 +40,11 @@ public class OrdenPedidoDTO {
     private List<DetallePedidoEmbed> detallePedidos;
     private List<InsumoProduccionEmbed> insumosProduccion;
 
-    public OrdenPedidoDTO(String id, String numeroPedido, String estadoPedido, LocalDateTime fechaEntrega, LocalDateTime fechaPedido, Double montoTotal, String clienteId, String observacion, String operarioId, String tipoServicio, String clienteNombre, String operarioNombre, TipoExtintor tipoExtintor, List<DetallePedidoEmbed> detallePedidos, String produccionId, List<InsumoProduccionEmbed> insumosProduccion, LocalTime horaEntrega, int cantidad, String clienteEmail) {
+    public OrdenPedidoDTO(String id, String numeroPedido, String estadoPedido, LocalDateTime fechaEntrega,
+            LocalDateTime fechaPedido, Double montoTotal, String clienteId, String observacion, String operarioId,
+            String tipoServicio, String clienteNombre, String operarioNombre, TipoExtintor tipoExtintor,
+            List<DetallePedidoEmbed> detallePedidos, String produccionId, List<InsumoProduccionEmbed> insumosProduccion,
+            LocalTime horaEntrega, int cantidad, String clienteEmail) {
         this.id = id;
         this.numeroPedido = numeroPedido;
         this.estadoPedido = estadoPedido;

@@ -35,21 +35,21 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        /* .requestMatchers("/api/auth/**").permitAll() */
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/api/insumos").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/ventanas").hasRole("CLIENTE")
                         .requestMatchers("/api/ventanaoperario").hasRole("OPERARIO")
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.sendError(403, "Acceso Denegado");
                         })
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.sendError(401, "No Autenticado");
-                        })
-                )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Filtro JWT antes del de autenticación
+                        }))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Filtro JWT antes del de
+                                                                                         // autenticación
 
         return http.build();
     }

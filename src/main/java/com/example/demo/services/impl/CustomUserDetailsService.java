@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
-import org.springframework.stereotype.Service;
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -28,6 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con correo: " + correo));
 
         String role = "ROLE_" + usuario.getTipoUsuario();
-        return new User(usuario.getNombre(), usuario.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(role)));
+        return new User(usuario.getNombre(), usuario.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(role)));
     }
 }

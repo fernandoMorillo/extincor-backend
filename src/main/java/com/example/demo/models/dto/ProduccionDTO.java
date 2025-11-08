@@ -2,7 +2,6 @@ package com.example.demo.models.dto;
 
 import com.example.demo.models.entity.DetallePedidoEmbed;
 import com.example.demo.models.entity.InsumoProduccionEmbed;
-import com.example.demo.models.entity.OrdenPedidoEmbed;
 import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,8 +21,6 @@ public class ProduccionDTO {
 
     private List<DetallePedidoEmbed> detallePedidos;
     private List<InsumoProduccionEmbed> insumosProduccion;
-
-
 
     public String getId() {
         return id;

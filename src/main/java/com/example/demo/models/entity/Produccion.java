@@ -1,8 +1,6 @@
 package com.example.demo.models.entity;
 
 import lombok.Data;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +19,6 @@ public class Produccion {
     private String productoNombre;
     private String operarioId;
     private String ordenPedidoId;
-
 
     private List<DetallePedidoEmbed> detallePedidos;
     private List<InsumoProduccionEmbed> insumosProduccion;

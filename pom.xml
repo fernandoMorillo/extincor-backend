@@ -123,6 +123,19 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+    <groupId>nz.ac.waikato.cms.weka</groupId>
+    <artifactId>weka-stable</artifactId>
+    <version>3.8.6</version>
+</dependency>
+
+<!-- Para manejo de CSV -->
+<dependency>
+    <groupId>com.opencsv</groupId>
+    <artifactId>opencsv</artifactId>
+    <version>5.7.1</version>
+</dependency>
+
 	</dependencies>
 
 	<repositories>

@@ -1,7 +1,7 @@
 package com.example.demo.services.impl;
 
 import com.example.demo.mapper.OrdenPedidoMapper;
-import com.example.demo.models.dto.DetallePedidoDTO;
+
 import com.example.demo.models.dto.InsumoProduccionDTO;
 import com.example.demo.models.dto.OrdenFinalizacionDTO;
 import com.example.demo.models.entity.*;
@@ -49,7 +49,6 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
     @Autowired
     private ProductoRepository productoRepository;
 
-
     @Override
     public OrdenPedidoDTO crearOrden(OrdenPedidoDTO dto) {
         LocalDate fecha = LocalDate.from(dto.getFechaPedido());
@@ -74,7 +73,8 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
                 ordenPedido.setCantidad(1);
                 ordenPedido = ordenPedidoRepository.save(ordenPedido);
 
-                String numeroPedidoGenerado = "#Orden" + ordenPedido.getId().substring(ordenPedido.getId().length() - 6);
+                String numeroPedidoGenerado = "#Orden"
+                        + ordenPedido.getId().substring(ordenPedido.getId().length() - 6);
                 ordenPedido.setNumeroPedido(numeroPedidoGenerado);
 
                 ordenPedido = ordenPedidoRepository.save(ordenPedido);
@@ -85,7 +85,6 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
             return resultList.get(0);
         }
 
-
         OrdenPedido orden = mapper.toEntity(dto);
         orden = ordenPedidoRepository.save(orden);
 
@@ -95,7 +94,6 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
 
         return mapper.toDTO(orden);
     }
-
 
     @Override
     public void agregarInsumosProduccion(String ordenId, String produccionId, List<InsumoProduccionDTO> insumosDTO) {
@@ -133,7 +131,6 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         produccionRepository.save(produccion);
     }
 
-
     @Override
     public void actualizarEstado(String id, String nuevoEstado) {
         OrdenPedido orden = ordenPedidoRepository.findById(id)
@@ -142,7 +139,6 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         orden.setEstadoPedido(nuevoEstado);
         ordenPedidoRepository.save(orden);
     }
-
 
     @Override
     public List<OrdenPedidoDTO> obtenerTodas() {
@@ -171,14 +167,16 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
                             .map(d -> DetallePedidoEmbed.builder()
                                     .id(d.getId())
                                     .cantidad(d.getCantidad())
-                                    .build()).collect(Collectors.toList()) : null)
+                                    .build())
+                            .collect(Collectors.toList()) : null)
                     .insumosProduccion(orden.getInsumosProduccion() != null ? orden.getInsumosProduccion().stream()
                             .map(i -> InsumoProduccionEmbed.builder()
                                     .id(i.getId())
                                     .cantidad(i.getCantidad())
                                     .estado(i.getEstado())
                                     .ordenPedidoId(i.getOrdenPedidoId())
-                                    .build()).collect(Collectors.toList()) : null)
+                                    .build())
+                            .collect(Collectors.toList()) : null)
                     .build()).collect(Collectors.toList());
         } else {
             // El operador solo ve sus órdenes asignadas
@@ -234,7 +232,6 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         orden.setClienteId(dto.getClienteId());
         orden.setTipoExtintor(dto.getTipoExtintor());
 
-
         OrdenPedido ordenActualizada = ordenPedidoRepository.save(orden);
         return mapper.toDTO(ordenActualizada);
 
@@ -277,7 +274,6 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
             produccion.setFechaFin(LocalDate.from(LocalDateTime.now()));
             produccionRepository.save(produccion);
 
-
             Producto producto = new Producto();
             producto.setFechaFabricacion(produccion.getFechaFin().atStartOfDay());
             producto.setNombre(produccion.getProductoNombre());
@@ -308,37 +304,33 @@ public class OrdenPedidoServiceImpl implements OrdenPedidoService {
         return mapper.toDTO(orden);
     }
 
-
     public String generarContenidoCorreo(String nombreCliente, String numeroPedido) {
         String plantilla = """
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <title>Orden Finalizada</title>
-        </head>
-        <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 30px;">
-            <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 20px; border-radius: 10px;">
-                <h2 style="color: #2c3e50;">Hola, <span style="color: #2980b9;">{{nombreCliente}}</span></h2>
-                <p>Nos complace informarte que tu orden <strong>#{{numeroPedido}}</strong> ha sido <span style="color: green;">completada exitosamente</span>.</p>
-                
-                <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
-                
-                <p>Gracias por confiar en nuestro servicio. Si tienes alguna consulta, no dudes en contactarnos.</p>
-                
-                <p style="margin-top: 30px;">Saludos cordiales,<br>
-                <strong>Equipo de Extintores S.A.</strong></p>
-            </div>
-        </body>
-        </html>
-        """;
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Orden Finalizada</title>
+                </head>
+                <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 30px;">
+                    <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 20px; border-radius: 10px;">
+                        <h2 style="color: #2c3e50;">Hola, <span style="color: #2980b9;">{{nombreCliente}}</span></h2>
+                        <p>Nos complace informarte que tu orden <strong>#{{numeroPedido}}</strong> ha sido <span style="color: green;">completada exitosamente</span>.</p>
+
+                        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
+
+                        <p>Gracias por confiar en nuestro servicio. Si tienes alguna consulta, no dudes en contactarnos.</p>
+
+                        <p style="margin-top: 30px;">Saludos cordiales,<br>
+                        <strong>Equipo de Extintores S.A.</strong></p>
+                    </div>
+                </body>
+                </html>
+                """;
 
         return plantilla
                 .replace("{{nombreCliente}}", nombreCliente)
                 .replace("{{numeroPedido}}", numeroPedido);
     }
-
-
-
 
 }

@@ -2,13 +2,12 @@ package com.example.demo.services.impl;
 
 import com.example.demo.mapper.ProduccionMapper;
 import com.example.demo.models.dto.ProduccionDTO;
-import com.example.demo.models.entity.DetallePedidoEmbed;
-import com.example.demo.models.entity.OrdenPedidoEmbed;
+
 import com.example.demo.models.entity.Produccion;
 import com.example.demo.repository.OrdenPedidoRepository;
 import com.example.demo.repository.ProduccionRepository;
 import com.example.demo.services.ProduccionService;
-import org.bson.types.ObjectId;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +56,6 @@ public class ProduccionServiceImpl implements ProduccionService {
 
         return produccionMapper.toDTO(saved);
     }
-
 
     @Override
     public void deleteById(String id) {
