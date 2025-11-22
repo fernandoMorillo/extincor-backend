@@ -7,14 +7,17 @@ public class PrediccionResultado {
     private ExtintorPrediccion entrada;
     private String tipoErrorPredicho;
     private double[] probabilidades;
+    private String consejo;
 
     public PrediccionResultado() {
     }
 
-    public PrediccionResultado(ExtintorPrediccion entrada, String tipoErrorPredicho, double[] probabilidades) {
+    public PrediccionResultado(ExtintorPrediccion entrada, String tipoErrorPredicho, double[] probabilidades,
+            String consejo) {
         this.entrada = entrada;
         this.tipoErrorPredicho = tipoErrorPredicho;
         this.probabilidades = probabilidades;
+        this.consejo = consejo;
     }
 
     public ExtintorPrediccion getEntrada() {
@@ -41,12 +44,21 @@ public class PrediccionResultado {
         this.probabilidades = probabilidades;
     }
 
+    public String getConsejo() {
+        return consejo;
+    }
+
+    public void setConsejo(String consejo) {
+        this.consejo = consejo;
+    }
+
     @Override
     public String toString() {
         return "PrediccionResultado{" +
                 "entrada=" + entrada +
                 ", tipoErrorPredicho='" + tipoErrorPredicho + '\'' +
                 ", probabilidades=" + Arrays.toString(probabilidades) +
+                ", consejo='" + consejo + '\'' +
                 '}';
     }
 }
