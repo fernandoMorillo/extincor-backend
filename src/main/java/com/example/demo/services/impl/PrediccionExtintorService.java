@@ -34,7 +34,7 @@ public class PrediccionExtintorService {
     private static final Logger logger = LoggerFactory.getLogger(PrediccionExtintorService.class);
 
     // ✅ CAMBIO 1: Usar @Value para cargar desde properties
-    @Value("${groq.api.key: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}")
+
     private String apiKey;
 
     @Value("${groq.api.url:https://api.groq.com/openai/v1/chat/completions}")
