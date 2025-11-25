@@ -34,13 +34,13 @@ public class PrediccionExtintorService {
     private static final Logger logger = LoggerFactory.getLogger(PrediccionExtintorService.class);
 
     // ✅ CAMBIO 1: Usar @Value para cargar desde properties
-    @Value("${groq.api.key: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}")
+    @Value("${groq.api.key}")
     private String apiKey;
 
-    @Value("${groq.api.url:https://api.groq.com/openai/v1/chat/completions}")
+    @Value("${groq.api.url}")
     private String apiUrl;
 
-    @Value("${groq.model:llama-3.1-70b-versatile}")
+    @Value("${groq.model}")
     private String model;
 
     private Classifier wekaModel;
