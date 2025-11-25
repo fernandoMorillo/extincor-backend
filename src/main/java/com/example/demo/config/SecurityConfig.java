@@ -87,7 +87,8 @@ public class SecurityConfig {
                                 "http://localhost:3000",
                                 "http://localhost:5173",
                                 "http://localhost:4200",
-                                "https://extincor-front-d548lw05z-fernando-morillos-projects.vercel.app/"));
+                                "https://extincor-front-d548lw05z-fernando-morillos-projects.vercel.app/",
+                                "https://extincor-final-bahua2azejfdf7dt.brazilsouth-01.azurewebsites.net/"));
 
                 // Métodos HTTP permitidos
                 configuration.setAllowedMethods(Arrays.asList(
